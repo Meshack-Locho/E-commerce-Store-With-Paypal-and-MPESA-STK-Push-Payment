@@ -15,15 +15,7 @@ if (!isset($_SESSION['cart'])) {
 
 $cartCount = count($_SESSION["cart"]);
 
-function calcTotal(){
-    $total = 0;
-    foreach ($_SESSION['cart'] as $item){
-        $total += $item['price'];
-    }
-    return $total;
-}
-
-$total = calcTotal();
+$total = $_SESSION['total'];
 ?>
 
 
@@ -43,11 +35,17 @@ $total = calcTotal();
                 height: 100vh;
                 overflow: hidden;
             }
+            @media screen and (max-width:800px) {
+                body{
+                    overflow: visible;
+                    height: auto;
+                }
+            }
           </style>
 </head>
 <body>
     <div class="wrapper">
-        <form action="checkout.php">
+        <form action="stkpush.php" method="post">
             <a href="cart.php"><i class="fa-solid fa-angle-left"></i>Go back to cart</a>
             <h2>Check Out Form</h2>
             <div class="fields">
@@ -68,6 +66,11 @@ $total = calcTotal();
             </div>
 
             <div>
+                <label for="phone">Phone Number</label>
+                <input type="tel" name="phone" id="phone" required>
+            </div>
+
+            <div>
                 <label for="location">Location</label>
                 <select name="location" id="location">
                     <option value="select place">Select a Place</option>
@@ -84,11 +87,11 @@ $total = calcTotal();
                 <span>
                     <div>
                     <label for="normal">Normal Delivery</label>
-                    <input type="radio" name="radio" id="normal" value="normal">
+                    <input type="radio" name="Order-type" id="normal" value="Normal-delivery">
                     </div>
                     <div>
                     <label for="overnight">Overnight delivery</label>
-                    <input type="radio" name="radio" id="overnight" value="overnight">
+                    <input type="radio" name="Order-type" id="overnight" value="Overnight-delivery">
                     </div>
                 </span>
             </div>
@@ -105,10 +108,11 @@ $total = calcTotal();
             if (!empty($_SESSION['cart'])) {
                 echo "<h2>Your Items:</h2>";
                 foreach ($_SESSION['cart'] as $item) {
+                    $price = $item['price'];
                     echo "<div class='cart-items'>
                             <img src='{$item['image']}' class='cart-images'>
                             <h4>Item: {$item['name']}</h4> 
-                            <h5>Price: KSH {$item['price']}</h5>
+                            <h5>Price: KSH " . number_format($price) . "</h5>
                           </div>";
                 }
                 
@@ -122,6 +126,7 @@ $total = calcTotal();
         </div>
     </div>
 
+    
     
 </body>
 </html>

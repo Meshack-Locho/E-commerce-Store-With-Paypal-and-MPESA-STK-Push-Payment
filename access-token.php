@@ -21,7 +21,7 @@ $response = curl_exec($ch);
 $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
 $response = json_decode($response);
-echo $access_token = $response->access_token;
+$access_token = $response->access_token;
 
 curl_close($ch);
 ?>

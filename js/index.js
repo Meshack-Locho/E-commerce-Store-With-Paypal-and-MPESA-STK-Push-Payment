@@ -14,6 +14,10 @@ function updateItemCount() {
 
 updateItemCount()
 
+function preventRel(event) {
+    event.preventDefault()
+}
+
 
 addToCartForm.addEventListener("submit", (event)=>{
     event.preventDefault()

@@ -12,6 +12,7 @@ if (isset($_GET['name'])) {
 
 
 $cartCount = count($_SESSION["cart"]);
+$total = $_SESSION["total"];
 ?>
 
 <!DOCTYPE html>
@@ -70,6 +71,8 @@ $cartCount = count($_SESSION["cart"]);
 
     <div class="cart-page">
 
+    <h4>Total: <?php echo $total?></h4>
+
     <a href="checkout.php" id="checkout-link">Go To Checkout</a>
 
         <div class="cart-page-items">
@@ -92,11 +95,12 @@ $cartCount = count($_SESSION["cart"]);
         
         if (!empty($_SESSION['cart'])) {
             foreach ($_SESSION['cart'] as $item) {
+                $price = $item["price"];
                 echo "<div class='cart-items-cont'>
                 <a href='' class='cart-items'>
                         <img src='{$item['image']}' class='cart-images'>
                         <h4>Item: {$item['name']}</h4> 
-                        <h5>Price: KSH {$item['price']}</h5>
+                        <h5>Price: KSH " . number_format((int)$price) . "</h5>
                 </a>
                 <form method='post' action=''>
                       <input type='hidden' name='remove_item_id' value='{$item['id']}'>

@@ -31,8 +31,22 @@ if (isset($_POST['add_to_cart'])) {
 
 $cartCount = count($_SESSION["cart"]);
 
+function calcTotal(){
+    $total = 0;
+    foreach ($_SESSION['cart'] as $item){
+        $total += $item['price'];
+    }
+    return $total;
+}
 
-// Sample form to add items to cart
+$total = calcTotal();
+
+$formattedTotal = number_format($total);
+
+$_SESSION["total"] = $formattedTotal;
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -103,11 +117,11 @@ $cartCount = count($_SESSION["cart"]);
                 <h4>Price: KSH ' . $row["price"] . '</h4>
                 </a>
             <div class="actions">
-            <form method="post" action="" id="add-to-cart">
+            <form method="post" action="" id="add-to-cart" onsubmit="preventRel()">
                 <input type="hidden" name="item_id" value="'. $row["id"] . '">
                 <input type="hidden" name="item_image" value="'. $row["image"] . '">
                 <input type="hidden" name="item_name" value="'. $row["name"] . '">
-                <input type="hidden" name="item_price" value="'. $row["price"] . '">
+                <input type="hidden" name="item_price" value="'.$row["price"].'">
                 <input type="submit" name="add_to_cart" value="Add to Cart">
             </form>
             <a href="checkout.php">Buy now</a>
