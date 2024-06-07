@@ -8,7 +8,7 @@ if (!isset($_SESSION['cart'])) {
 $cartItems = $_SESSION["cart"];
 include("access-token.php");
 
-$_SESSION["total"];
+$total = $_SESSION["total"];
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
@@ -32,7 +32,7 @@ $BusinessShortCode = "174379";
 $timeStamp = date("YmdHis");
 $password = base64_encode($BusinessShortCode . $passKey . $timeStamp);
 $phone = $user_phone;
-$cash = $_SESSION["total"];
+$cash = $total;
 $partyA = $phone;
 $partyB = "254708374149";
 $accoundRef = "Meshack Locho";
@@ -90,6 +90,8 @@ if ($enc->ResponseCode === "0") {
           $message .= "Name: " . $item["name"] . "<br>Price: KSH" . $item["price"] . "<br><br>" . "\n";
       }
       mail("meshacklocho5@gmail.com", "ORDERED ITEMS", $message, $headers);
+
+      sleep(5);
 
       header("Location: query.php");
 

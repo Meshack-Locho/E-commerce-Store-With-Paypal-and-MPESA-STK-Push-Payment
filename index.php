@@ -41,9 +41,7 @@ function calcTotal(){
 
 $total = calcTotal();
 
-$formattedTotal = number_format($total);
-
-$_SESSION["total"] = $formattedTotal;
+$_SESSION["total"] = $total;
 
 
 
