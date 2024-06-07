@@ -18,8 +18,10 @@ $user_phone = $_POST["phone"];
 $email = $_POST["email"];
 $firstName = $_POST["first-name"];
 $secondName = $_POST["second-name"];
+$address = $_POST["address"];
 $location = $_POST['location'];
 $typeofDelivery = $_POST["Order-type"];
+$paymentType = $_POST["payment-type"];
 
 
 
@@ -79,6 +81,9 @@ if ($enc->ResponseCode === "0") {
       New Order: <br><br>
       Name: $firstName $secondName <br>
       Email: $email <br>
+      Type of delivery: $typeofDelivery <br>
+      Payment Method: $paymentType <br>
+      Address: $address <br>
       Phone Number: $user_phone <br><br>
       Cart items: <br><br> \n";
       foreach ($cartItems as $item){

@@ -92,15 +92,30 @@ $_SESSION["total"] = $formattedTotal;
         </div>
 
 
-        <div class="search-panel">
+        
+        <img src="images/hero/hero-4.png" alt="" class="hero-img">
+    </header>
+
+    <main>
+    <div class="search-filters">
+    <div class="search-panel">
             <h3>Search for watches</h3>
             <form action="search.php" method="get">
                 <input type="search" name="search" id="search">
                 <input type="submit" value="Search">
             </form>
         </div>
-        <img src="images/hero/hero-4.png" alt="" class="hero-img">
-    </header>
+
+        <div class="filters">
+            <h3>Sort By</h3>
+            <div class="sorts">
+                <button>Prices</button>
+                <button>Name</button>
+                <button>Type</button>
+            </div>
+        </div>
+    </div>
+        
     <div class="container">
         <?php
 
@@ -111,7 +126,7 @@ $_SESSION["total"] = $formattedTotal;
         if ($res->num_rows > 0) {
             while ($row=$res->fetch_assoc()) {
             echo '<div class="items">
-                <a href="">
+                <a href="product.php?id='.$row["id"].'">
                 <img src="'. $row["image"] . '" alt="" class="item-images">
                 <h3>'. $row["name"] . '</h3>
                 <h4>Price: KSH ' . $row["price"] . '</h4>
@@ -133,7 +148,12 @@ $_SESSION["total"] = $formattedTotal;
         
         ?>
     </div>
+    </main>
     
+    <footer>
+        <h3>Mellow Wrist Watches &copy; Copyright 2024</h3>
+        <h5>Created by, Meshack Locho</h5>
+    </footer>
 
     <script src="js/index.js"></script>
 </body>

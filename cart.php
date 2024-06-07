@@ -58,15 +58,18 @@ $total = $_SESSION["total"];
             </div>
         </div>
 
+    </div>
 
-        <div class="search-panel">
+    
+<main>
+    
+<div class="search-panel">
             <h3>Search for watches</h3>
             <form action="search.php" method="get">
                 <input type="search" name="search" id="search">
                 <input type="submit" value="Search">
             </form>
         </div>
-    </div>
 
 
     <div class="cart-page">
@@ -74,6 +77,8 @@ $total = $_SESSION["total"];
     <h4>Total: <?php echo $total?></h4>
 
     <a href="checkout.php" id="checkout-link">Go To Checkout</a>
+
+    
 
         <div class="cart-page-items">
         <?php
@@ -116,6 +121,7 @@ $total = $_SESSION["total"];
         ?>
         </div>
     </div>
+</main>
 
     <script src="js/index.js"></script>
 </body>
