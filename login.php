@@ -16,8 +16,6 @@ if (isset($_POST["submit"])) {
         $user_data = $result->fetch_assoc();
 
         if (password_verify($password, $user_data["password"])) {
-
-            header("Location $prevUrl");
             $_SESSION["fname"] = $user_data["first_name"];
             $_SESSION["sname"] = $user_data["second_name"];
             $_SESSION["email"] = $user_data["email"];
@@ -28,6 +26,9 @@ if (isset($_POST["submit"])) {
                     unset($_SESSION['redirect_to']);
                     header("Location: $redirect_to");
                     exit();
+            }else{
+                header("Location: index.php");
+                exit();
             }
         }else{
             echo "<h4 class='errors'>Password is Inorrect</h4>";

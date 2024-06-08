@@ -14,20 +14,21 @@ function updateItemCount() {
 
 updateItemCount()
 
+
+
 function preventRel(event) {
     event.preventDefault()
 }
 
-
+removingItemForm.onsubmit = function () {
+    updateItemCount()
+}
 addToCartForm.addEventListener("submit", (event)=>{
     event.preventDefault()
     updateItemCount()
 })
 
-removingItemForm.onsubmit = function (e) {
-    e.preventDefault()
-    updateItemCount()
-}
+
 
 
 

@@ -5,43 +5,127 @@ session_start();
 include("db.php");
 
 // Check if cart array exists in session, if not, create it
-if (!isset($_SESSION['cart'])) {
-    $_SESSION['cart'] = array();
-}
+    
 
-// Function to add item to cart
-function add_to_cart($item_id, $item_image, $item_name, $item_price) {
-    $_SESSION['cart'][] = array(
-        'id' => $item_id,
-        'image' => $item_image,
-        'name' => $item_name,
-        'price' => $item_price
-    );
-}
+
 
 
 // Check if item is added to cart
-if (isset($_POST['add_to_cart'])) {
-    $item_id = $_POST['item_id'];
-    $item_name = $_POST['item_name'];
-    $item_price = $_POST['item_price'];
-    $item_image = $_POST['item_image'];
-    add_to_cart($item_id, $item_image, $item_name, $item_price);
-}
+if (!isset($_SESSION["id"])) {
 
-$cartCount = count($_SESSION["cart"]);
-
-function calcTotal(){
-    $total = 0;
-    foreach ($_SESSION['cart'] as $item){
-        $total += $item['price'];
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = array();
     }
-    return $total;
+
+    function add_to_cart($item_id, $item_image, $item_name, $item_price) {
+        $_SESSION['cart'][] = array(
+            'id' => $item_id,
+            'image' => $item_image,
+            'name' => $item_name,
+            'price' => $item_price
+        );
+    }
+    
+    
+    // Function to add item to cart
+    
+    if (isset($_POST['add_to_cart'])) {
+        $item_id = $_POST['item_id'];
+        $item_name = $_POST['item_name'];
+        $item_price = $_POST['item_price'];
+        $item_image = $_POST['item_image'];
+        add_to_cart($item_id, $item_image, $item_name, $item_price);
+    }
+    
+    $cartCount = count($_SESSION["cart"]);
+    
+    function calcTotal(){
+        $total = 0;
+        foreach ($_SESSION['cart'] as $item){
+            $total += $item['price'];
+        }
+        return $total;
+    }
+    
+    $total = calcTotal();
+    
+    $_SESSION["total"] = $total;
+}else{
+    // $cartArr = $_SESSION["cart"];
+    
+    // $cartJson = json_encode($_SESSION["cart"]);
+
+    $myCart = [];
+
+    
+
+
+
+    // function add_to_cart() {
+        
+    //     $item_name = $_POST['item_name'];
+    //     $item_price = $_POST['item_price'];
+    //     $item_image = $_POST['item_image'];
+
+    //     $cartArr = array(
+    //         'id' => $item_id,
+    //         'image' => $item_image,
+    //         'name' => $item_name,
+    //         'price' => $item_price
+    //     );
+    //     $cartJson = json_encode($cartArr);
+    // }
+    
+    if (isset($_POST['add_to_cart'])) {
+        
+
+        $item_id = $_POST['item_id'];
+
+        $sql = "SELECT * FROM all_products WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $item_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+
+        $product_id = $row['id'];
+        $product_name = $row['name'];
+        $product_price = $row['price'];
+        $product_image = $row["image"];
+
+//Retrieving existing cart data from the database and decode it
+
+        $user_id = $_SESSION['id']; // Assuming you have user ID stored in session
+        $sql = "SELECT cart FROM users WHERE id = ?";
+        $stmt = $conn2->prepare($sql);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $cart = json_decode($row['cart'], true);
+
+//Adding the new product to the cart data
+        $cart[] = array(
+            'name' => $product_name,
+            'id' => $product_id,
+            'price' => $product_price,
+            'image' => $product_image
+        );
+
+//Encoding the updated cart data
+            $updated_cart_json = json_encode($cart);
+
+//Updating the database with the updated cart data
+            $sql = "UPDATE users SET cart = ? WHERE id = ?";
+            $stmt = $conn2->prepare($sql);
+            $stmt->bind_param("si", $updated_cart_json, $user_id);
+            $stmt->execute();
+            $stmt->close();
+    }
+    
+    
+    
 }
-
-$total = calcTotal();
-
-$_SESSION["total"] = $total;
 
 
 
@@ -56,6 +140,14 @@ $_SESSION["total"] = $total;
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Josefin Sans">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        #user-name{
+            color: white;
+        }
+        .user-options{
+            color: black;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -70,8 +162,22 @@ $_SESSION["total"] = $total;
                     <li><a href="">Home</a></li>
                     <li><a href="">Watches</a></li>
                     <li><a href="">Contact</a></li>
-                    <li><a href="" id="login-link">Login</a></li>
-                    <li><a href="" id="signup-link">Sign Up</a></li>
+                    <?php
+                    
+                        if (isset($_SESSION["id"])) { ?>
+                            <li id="user-name"><?= $_SESSION["fname"]?> <i class="fa-solid fa-angle-down"></i>
+                            
+                            <div class="user-options">
+                                <a href="dashboard.php">Dashboard</a>
+                                <a href="logout.php">Logout</a>
+                            </div>
+                            </li>
+                       <?php }else{ ?>
+                            <li><a href="login.php" id="login-link">Login</a></li>
+                            <li><a href="signup.php" id="signup-link">Sign Up</a></li>
+                       <?php }
+                    
+                    ?>
                 </ul>
             </nav>
 

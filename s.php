@@ -1,15 +1,29 @@
 <?php
 session_start(); // Start the session
-
+include 'db.php';
 
 // Check if cart array exists in session, if not, create it
-if (!isset($_SESSION['cart'])) {
-    $_SESSION['cart'] = array();
+if (!isset($_SESSION["id"])) {
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = array();
+    }
+    
+    $cartCount = count($_SESSION["cart"]);
+    
+    echo $cartCount;
+}else{
+    $user_id = $_SESSION["id"];
+
+    $stmt = $conn2->prepare("SELECT cart FROM users WHERE id =?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $row=$res->fetch_assoc();
+    $cart = json_decode($row['cart'], true);
+
+
+    echo count($cart);
 }
-
-$cartCount = count($_SESSION["cart"]);
-
-echo $cartCount;
 // $conn = new mysqli("localhost", "root", "", "products");
 
 

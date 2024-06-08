@@ -1,5 +1,6 @@
 <?php
 
+//SETTING SESSION CART
 session_start();
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = array();
@@ -8,7 +9,10 @@ if (!isset($_SESSION['cart'])) {
 $cartItems = $_SESSION["cart"];
 include("access-token.php");
 
+//CART TOTAL
 $total = $_SESSION["total"];
+
+//FORM SUBMISSION
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
@@ -24,12 +28,18 @@ $typeofDelivery = $_POST["Order-type"];
 $paymentType = $_POST["payment-type"];
 
 
-
+//REQUEST URL FROM SAF SANDBOX
 $requestUrl = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
+
+//CALLBACK URL TO RECEIVE TRANSACTION STATUS
 $callBackUrl = "https://2be3-2c0f-fe38-2402-148-5db0-bdd3-cca1-fabd.ngrok-free.app/mysite/ec-website/callback.php";
+
+//DETAILS FOR THE TRANSACTION LOGIC
 $passKey="bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
 $BusinessShortCode = "174379";
 $timeStamp = date("YmdHis");
+
+//ENCODING PASSWORD
 $password = base64_encode($BusinessShortCode . $passKey . $timeStamp);
 $phone = $user_phone;
 $cash = $total;
@@ -37,13 +47,16 @@ $partyA = $phone;
 $partyB = "254708374149";
 $accoundRef = "Meshack Locho";
 $transactionDesc = "STK PUSH TEST";
-$amount = $cash;
+
+//HEADER FOR THE CONTENT TYPE WHICH IS JSON
 $stkPushHeader = ["Content-Type: application/json", "Authorization: Bearer " . $access_token];
 
-$curl = curl_init();
-curl_setopt($curl, CURLOPT_URL, $requestUrl);
-curl_setopt($curl, CURLOPT_HTTPHEADER, $stkPushHeader);
+//INITIATING THE API WITH CURL
+$curl = curl_init(); //INITIATING API
+curl_setopt($curl, CURLOPT_URL, $requestUrl); //SETTING THE URL FOR THE API
+curl_setopt($curl, CURLOPT_HTTPHEADER, $stkPushHeader); //SETTING THE HEADER FOR THE CONTENT 
 
+//ARRAY CARRYING THE TRANSACTION INFO 
 $curl_post_data = array(
     "BusinessShortCode"=> 174379,
     "Password"=> $password,
@@ -58,13 +71,16 @@ $curl_post_data = array(
     "TransactionDesc"=> "Payment of X"
 );
 
+//CONVERTING THE ARRAY INTO JSON FORMAT TO SEND TO THE SAF API IN JSON FORMAT
 $data_to_string = json_encode($curl_post_data);
 curl_setopt($curl, CURLOPT_POST, true);
-curl_setopt($curl, CURLOPT_POSTFIELDS, $data_to_string);
+curl_setopt($curl, CURLOPT_POSTFIELDS, $data_to_string); //THE FIELDS FOR THE DETAILS REQUIRED FOR THE TRANSACTION LINKED TO OUR ARRAY
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-$curl_res = curl_exec($curl);
-$enc = json_decode($curl_res);
+$curl_res = curl_exec($curl); // CURL EXECUTION
+$enc = json_decode($curl_res); // CONERTING DATA DROM JSON FORMAT
+
+//RESPONSE CODE 0 MEANS TRANSACTION IS SUCCESSFUL
 if ($enc->ResponseCode === "0") {
     $CheckoutRequestID = $enc->CheckoutRequestID;
 
