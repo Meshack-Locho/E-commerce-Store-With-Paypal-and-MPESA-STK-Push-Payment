@@ -119,7 +119,7 @@ if (isset($_POST["add_to_cart"])) {
                                 <h4>Price: KSH ' . $row["price"] . '</h4>
                                 </a>
                                 <div class="actions">
-                                    <form method="post" action="" id="add-to-cart">
+                                    <form method="post" action="add-to-cart.php" id="add-to-cart">
                                         <input type="hidden" name="item_id" value="'. $row["id"] . '">
                                         <input type="hidden" name="item_image" value="'. $row["image"] . '">
                                         <input type="hidden" name="item_name" value="'. $row["name"] . '">

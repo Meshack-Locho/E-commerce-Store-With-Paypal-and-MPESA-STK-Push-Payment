@@ -1,7 +1,51 @@
 <?php
 session_start();
 include "access-token.php";
+include "db.php";
 date_default_timezone_set("Africa/Nairobi");
+
+if (!isset($_SESSION["id"])) {
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = array();
+        
+    }
+    $cartItems = $_SESSION["cart"];
+    
+    
+    //CART TOTAL
+    $total = $_SESSION["total"];
+}else{
+        $user_id = $_SESSION["id"];
+        $stmt = $conn2->prepare("SELECT cart FROM users WHERE id=?");
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $row = $res->fetch_assoc();
+        $dec = json_decode($row['cart']);
+      
+        
+        $total = 0;
+
+        foreach ($dec as $value) {
+            $total += $value->price;
+        }
+}
+$formData = $_SESSION['formData'];
+
+$firstName = $formData["first-name"];
+$secondName = $formData["second-name"];
+$email = $formData["email"];
+$address = $formData["address"];
+$user_phone = $formData["phone"];
+$paymentType = $formData["payment-type"];
+if (isset($formData["Order-type"])) {
+    $typeofDelivery = $formData["Order-type"];
+}else{
+    $typeofDelivery = "";
+}
+$location = $formData["location"];
+
+
 
 $query_url = 'https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query';
 
@@ -52,11 +96,41 @@ if (isset($data_to->ResultCode)) {
                 <a href='cart.php'>Return to Cart <i class='fa-solid fa-cart-shopping'></i></a>
               </div>";
     }elseif($resultCode === "0"){
+        
+        $headers = "From: meshacklocho@meshacklocho.co.ke\r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= "Content-type: text/html; charset=iso-8859-1\r\n"; 
+      
+        $message = "
+            <h2>New Order:</h2> <br><br>
+            Name: $firstName $secondName <br>
+            Email: $email <br>
+            Type of delivery: $typeofDelivery <br>
+            Payment Method: $paymentType <br>
+            Address: $address <br>
+            Phone Number: $user_phone <br><br>
+            Total: $total <br><br>
+            Cart items: <br><br> \n";
+        if (!isset($_SESSION["id"])) {
+                foreach ($cartItems as $item){
+                $message .= "Name: " . $item["name"] . "<br>Price: KSH" . $item["price"] . "<br><br>" . "\n";
+            }
+        }else{
+            foreach ($dec as $item){
+                $message .= "Name: " . $item->name . "<br>Price: KSH" . $item->price . "<br><br>" . "\n";
+            }
+        }
+        
+        mail("meshacklocho5@gmail.com", "ORDERED ITEMS", $message, $headers);
         echo "<div class='checkout-status'>
                 <h3>Dear Customer, the Transaction was successful.</h3>
                 <a href='index.php'>Return to Shop <i class='fa-solid fa-bag-shopping'></i></a>
               </div>";
     }
+
+        
+
+        
 }
 curl_close($curl);
 

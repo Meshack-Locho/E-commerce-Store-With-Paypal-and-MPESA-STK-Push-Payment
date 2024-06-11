@@ -2,15 +2,34 @@
 
 //SETTING SESSION CART
 session_start();
-if (!isset($_SESSION['cart'])) {
-    $_SESSION['cart'] = array();
-    
-}
-$cartItems = $_SESSION["cart"];
 include("access-token.php");
+include "db.php";
+if (!isset($_SESSION["id"])) {
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = array();
+        
+    }
+    $cartItems = $_SESSION["cart"];
+    
+    
+    //CART TOTAL
+    $total = $_SESSION["total"];
+}else{
+        $user_id = $_SESSION["id"];
+        $stmt = $conn2->prepare("SELECT cart FROM users WHERE id=?");
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $row = $res->fetch_assoc();
+        $dec = json_decode($row['cart']);
+      
+        
+        $total = 0;
 
-//CART TOTAL
-$total = $_SESSION["total"];
+        foreach ($dec as $value) {
+            $total += $value->price;
+        }
+}
 
 //FORM SUBMISSION
 
@@ -23,7 +42,7 @@ $email = $_POST["email"];
 $firstName = $_POST["first-name"];
 $secondName = $_POST["second-name"];
 $address = $_POST["address"];
-$location = $_POST['location'];
+$location = $_POST['city'];
 $typeofDelivery = $_POST["Order-type"];
 $paymentType = $_POST["payment-type"];
 
@@ -83,29 +102,13 @@ $enc = json_decode($curl_res); // CONERTING DATA DROM JSON FORMAT
 //RESPONSE CODE 0 MEANS TRANSACTION IS SUCCESSFUL
 if ($enc->ResponseCode === "0") {
     $CheckoutRequestID = $enc->CheckoutRequestID;
+    
+    $_SESSION['formData'] = $_POST;
 
     echo "<div class='checkout-status'>
         <h2>$enc->CustomerMessage</h2>
         <h2>$curl_res</h2>
       </div>";
-
-      $headers = "From: meshacklocho@meshacklocho.co.ke\r\n";
-      $headers .= "MIME-Version: 1.0\r\n";
-      $headers .= "Content-type: text/html; charset=iso-8859-1\r\n"; 
-      
-      $message = "
-      New Order: <br><br>
-      Name: $firstName $secondName <br>
-      Email: $email <br>
-      Type of delivery: $typeofDelivery <br>
-      Payment Method: $paymentType <br>
-      Address: $address <br>
-      Phone Number: $user_phone <br><br>
-      Cart items: <br><br> \n";
-      foreach ($cartItems as $item){
-          $message .= "Name: " . $item["name"] . "<br>Price: KSH" . $item["price"] . "<br><br>" . "\n";
-      }
-      mail("meshacklocho5@gmail.com", "ORDERED ITEMS", $message, $headers);
 
       sleep(5);
 

@@ -3,13 +3,32 @@ session_start();
 include 'db.php';
 
 
-if (isset($_GET['name'])) {
-    echo $_SESSION["cart"][$_GET['name']];
+if (!isset($_SESSION["id"])) {
+    if (isset($_GET['name'])) {
+        echo $_SESSION["cart"][$_GET['name']];
+    }
+    
+    
+    $cartCount = count($_SESSION["cart"]);
+    $total = $_SESSION["total"];
+}else{
+    $user_id = $_SESSION["id"];
+        $stmt = $conn2->prepare("SELECT cart FROM users WHERE id=?");
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $row = $res->fetch_assoc();
+        $dec = json_decode($row['cart']);
+      
+        
+        $total = 0;
+
+        foreach ($dec as $value) {
+            $total += $value->price;
+        }
+        
+
 }
-
-
-$cartCount = count($_SESSION["cart"]);
-$total = $_SESSION["total"];
 ?>
 
 <!DOCTYPE html>
@@ -146,10 +165,6 @@ $total = $_SESSION["total"];
             $row=$res->fetch_assoc();
             $cart = json_decode($row['cart']);
 
-            
-            var_dump($cart);
-            $t = (array)$cart;
-
             if (!empty($cart)) {
                 foreach ($cart as $items) {
                     // echo "ID: " . $items->id . ", ";
@@ -167,60 +182,12 @@ $total = $_SESSION["total"];
                             <h4>Item: ".$items->name."</h4> 
                             <h5>Price: KSH " . $items->price . "</h5>
                     </a>
-                    <form method='post' action=''>
+                    <form method='post' action='remove-frm-cart.php'>
                           <input type='hidden' name='remove_item_id' value='".$items->id."'>
                           <input type='submit' name='remove_from_cart' value='Remove' id='remove-items-form'>
                     </form><br>
                     </div>";
 
-                }
-                if (isset($_POST['remove_from_cart'])) {
-                    // $item_key = null;
-                    // $item_id = $_POST["remove_item_id"];
-                    // foreach ($cart as $key => $item) {
-                    //     if ($item->id == $item_id) {
-                    //         $item_key = $key;
-                    //         break;
-                    //   }
-                    // }
-
-                    // if ($item_key !== null) {
-                    //     unset($cart->$item_key);
-                    // }
-
-                    // $stmt = $conn2->prepare("UPDATE users SET cart=? WHERE id=?");
-                    // $new_cart = json_encode($cart);
-                    // $stmt->bind_param("si", $new_cart, $user_id);
-                    // $stmt->execute();
-                    // $stmt->close();
-
-                    if (isset($_POST["remove_item_id"])) {
-                        $remove_id = $_POST["remove_item_id"];
-                        $stmt=$conn2->prepare("SELECT cart FROM users WHERE id=?");
-                        $stmt->bind_param("i", $user_id);
-                        $stmt->execute();
-                        $result = $stmt->get_result();
-                        $row = $result->fetch_assoc();
-                        $cart = json_decode($row['cart'], true);
-                        echo $remove_id;
-                        echo $cart->$remove_id;
-
-                        if (isset($remove_id)) {
-                            unset($cart->$remove_id);
-
-                            $new_cart = json_encode($cart);
-
-                            $stmt = $conn2->prepare("UPDATE users SET cart=? WHERE id=?");
-                            $stmt->bind_param("si", $new_cart, $user_id);
-                            $stmt->execute();
-                            $stmt->close();
-                            echo "SET";
-                        }else{
-                            echo "NOT SET";
-                        }
-                    }else{
-                        echo "Product Id Not there";
-                    }
                 }
             }else{
                 echo "Cart is Empty";
@@ -229,6 +196,41 @@ $total = $_SESSION["total"];
         
         ?>
         </div>
+    </div>
+
+    <h2>Other Similar Watches</h2>
+
+    <div class="container">
+    <?php
+
+        $stmt = $conn->prepare("SELECT * FROM all_products ORDER BY id DESC");
+        $stmt->execute();
+        $res = $stmt->get_result();
+
+        if ($res->num_rows > 0) {
+        while ($row=$res->fetch_assoc()) {
+        echo '<div class="items">
+                <a href="product.php?id='.$row["id"].'">
+                <img src="'. $row["image"] . '" alt="" class="item-images">
+                <h3>'. $row["name"] . '</h3>
+                <h4>Price: KSH ' . $row["price"] . '</h4>
+                </a>
+        <div class="actions">
+        <form method="post" action="add-to-cart.php" id="add-to-cart" onsubmit="preventRel()">
+                <input type="hidden" name="item_id" value="'. $row["id"] . '">
+                <input type="hidden" name="item_image" value="'. $row["image"] . '">
+                <input type="hidden" name="item_name" value="'. $row["name"] . '">
+                <input type="hidden" name="item_price" value="'.$row["price"].'">
+                <input type="submit" name="add_to_cart" value="Add to Cart">
+        </form>
+        <a href="checkout.php">Buy now</a>
+        </div>
+        </div>';
+}
+}
+
+
+?>
     </div>
 </main>
 

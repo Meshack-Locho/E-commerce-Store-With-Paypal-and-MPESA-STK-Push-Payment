@@ -46,40 +46,24 @@ if (!isset($_SESSION["id"])) {
         }
         return $total;
     }
+    $session_cart = $_SESSION["cart"];
     
     $total = calcTotal();
     
     $_SESSION["total"] = $total;
 }else{
-    // $cartArr = $_SESSION["cart"];
-    
-    // $cartJson = json_encode($_SESSION["cart"]);
+
+    //Initial Empty Cart at first Sign up
 
     $myCart = [];
-
-    
-
-
-
-    // function add_to_cart() {
-        
-    //     $item_name = $_POST['item_name'];
-    //     $item_price = $_POST['item_price'];
-    //     $item_image = $_POST['item_image'];
-
-    //     $cartArr = array(
-    //         'id' => $item_id,
-    //         'image' => $item_image,
-    //         'name' => $item_name,
-    //         'price' => $item_price
-    //     );
-    //     $cartJson = json_encode($cartArr);
-    // }
     
     if (isset($_POST['add_to_cart'])) {
-        
+        //ADD TO CART IS CLICKED
 
+        //ITEM ID FROM A HIDDEN FORM INPUT
         $item_id = $_POST['item_id'];
+
+        //ALL PRODUCTS FROM THE DATABASE WHERE ID IS EQUAL TO THE SELECTED ITEM'S ID
 
         $sql = "SELECT * FROM all_products WHERE id = ?";
         $stmt = $conn->prepare($sql);
@@ -88,29 +72,45 @@ if (!isset($_SESSION["id"])) {
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
 
+        //PRODUCT INFORMATION ACCORING TO SELECTED ID
         $product_id = $row['id'];
         $product_name = $row['name'];
         $product_price = $row['price'];
         $product_image = $row["image"];
+        $quantity = $_POST["quantity"];
 
 //Retrieving existing cart data from the database and decode it
 
-        $user_id = $_SESSION['id']; // Assuming you have user ID stored in session
+        $user_id = $_SESSION['id']; // user ID stored in session
+
+        //EACH USER WITH HIS/HER OWN CART COLUMN STORED IN JSON FORMAT
         $sql = "SELECT cart FROM users WHERE id = ?";
         $stmt = $conn2->prepare($sql);
         $stmt->bind_param("i", $user_id);
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
+
+        //Retrieving existing cart data from the database and decode it
+
         $cart = json_decode($row['cart'], true);
 
-//Adding the new product to the cart data
+        if ($quantity) {
+            $product_price = $product_price * $quantity;
+        }else{
+            $product_price = $product_price;
+        }
+
+        
+            //Adding the new product to the cart data
         $cart[] = array(
             'name' => $product_name,
             'id' => $product_id,
             'price' => $product_price,
             'image' => $product_image
         );
+
+        
 
 //Encoding the updated cart data
             $updated_cart_json = json_encode($cart);
@@ -121,6 +121,10 @@ if (!isset($_SESSION["id"])) {
             $stmt->bind_param("si", $updated_cart_json, $user_id);
             $stmt->execute();
             $stmt->close();
+            echo "Item does not exist";
+        
+
+
     }
     
     
@@ -228,7 +232,30 @@ if (!isset($_SESSION["id"])) {
             $res = $stmt->get_result();
 
         if ($res->num_rows > 0) {
+            if (isset($_SESSION["id"])) {
+                $user_id = $_SESSION['id'];
+                //EACH USER WITH HIS/HER OWN CART COLUMN STORED IN JSON FORMAT
+            $sql = "SELECT cart FROM users WHERE id = ?";
+            $stmt = $conn2->prepare($sql);
+            $stmt->bind_param("i", $user_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+
+        //Retrieving existing cart data from the database and decode it
+
+            $cart = json_decode($row['cart'], true);
+
+            function checkIfItemExists($itemId, $cartItems){
+                foreach ($cartItems as $items) {
+                    if ($items["id"] == $itemId) {
+                        return true;
+                    }
+                }
+                return false;
+            }
             while ($row=$res->fetch_assoc()) {
+                
             echo '<div class="items">
                 <a href="product.php?id='.$row["id"].'">
                 <img src="'. $row["image"] . '" alt="" class="item-images">
@@ -241,13 +268,60 @@ if (!isset($_SESSION["id"])) {
                 <input type="hidden" name="item_image" value="'. $row["image"] . '">
                 <input type="hidden" name="item_name" value="'. $row["name"] . '">
                 <input type="hidden" name="item_price" value="'.$row["price"].'">
-                <input type="submit" name="add_to_cart" value="Add to Cart">
-            </form>
+                <div class="qty-cont">
+                    <label for="quantity">Qty</label>
+                    <input type="number" name="quantity" id="quantity">
+                </div>';
+            
+               echo (checkIfItemExists($row["id"], $cart)) ? '<a href="cart.php">Item In Cart - View Cart</a>':'<input type="submit" name="add_to_cart" value="Add to Cart">';
+
+            echo '</form>
             <a href="checkout.php">Buy now</a>
             </div>
             </div>';
+            
     }
+}else{
+        function checkIfItemExists($itemId, $cartItems){
+            foreach ($cartItems as $items) {
+                if ($items["id"] == $itemId) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        while ($row=$res->fetch_assoc()) {
+            
+        echo '<div class="items">
+            <a href="product.php?id='.$row["id"].'">
+            <img src="'. $row["image"] . '" alt="" class="item-images">
+            <h3>'. $row["name"] . '</h3>
+            <h4>Price: KSH ' . $row["price"] . '</h4>
+            </a>
+        <div class="actions">
+        <form method="post" action="" id="add-to-cart" onsubmit="preventRel()">
+            <input type="hidden" name="item_id" value="'. $row["id"] . '">
+            <input type="hidden" name="item_image" value="'. $row["image"] . '">
+            <input type="hidden" name="item_name" value="'. $row["name"] . '">
+            <input type="hidden" name="item_price" value="'.$row["price"].'">
+            <div class="qty-cont">
+                <label for="quantity">Qty</label>
+                <input type="number" name="quantity" id="quantity">
+            </div>';
+        
+           echo (checkIfItemExists($row["id"], $_SESSION["cart"])) ? '<a href="cart.php">Added - View Cart</a>':'<input type="submit" name="add_to_cart" value="Add to Cart">';
+
+        echo '</form>
+        <a href="checkout.php">Buy now</a>
+        </div>
+        </div>';
+        
 }
+    }
+} // user ID stored in session
+
+            
+
 
         
         ?>
