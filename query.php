@@ -38,12 +38,15 @@ $email = $formData["email"];
 $address = $formData["address"];
 $user_phone = $formData["phone"];
 $paymentType = $formData["payment-type"];
+$country = $formData["country"];
+$city = $formData["city"];
+$postal_code = $formData["postal-code"];
 if (isset($formData["Order-type"])) {
     $typeofDelivery = $formData["Order-type"];
 }else{
     $typeofDelivery = "";
 }
-$location = $formData["location"];
+
 
 
 
@@ -108,6 +111,8 @@ if (isset($data_to->ResultCode)) {
             Type of delivery: $typeofDelivery <br>
             Payment Method: $paymentType <br>
             Address: $address <br>
+            City: $city <br>
+            Postal-code: $postal_code <br>
             Phone Number: $user_phone <br><br>
             Total: $total <br><br>
             Cart items: <br><br> \n";

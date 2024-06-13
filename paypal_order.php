@@ -3,7 +3,7 @@
 session_start();
 //HERE IS INCLUDING THE ACCESSTOKEN WHICH IS IN PAYPAL_ACCESS_TOKEN.PHP
 include("paypal_access_token.php");
-include "db.php";
+include "http://localhost:8080/mysite/ec-website/db.php";
 
 if (!isset($_SESSION["id"])) {
   if (!isset($_SESSION['cart'])) {
@@ -83,8 +83,8 @@ $data = array(
                     "postal_code" => "$postal_code"
             )),
         "amount" => array(
-          "currency_code" => "KES",
-          "value" => "1"
+          "currency_code" => "USD",
+          "value" => "$total"
         )
       )
     ),

@@ -1,14 +1,37 @@
 <?php
 
 session_start();
+include "http://localhost:8080/mysite/ec-website/db.php";
 
-if (!isset($_SESSION['cart'])) {
-    $_SESSION['cart'] = array();
+if (!isset($_SESSION["id"])) {
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = array();
+        
+    }
+    $cartItems = $_SESSION["cart"];
     
+    
+    //CART TOTAL
+    $total = $_SESSION["total"];
+}else{
+        $user_id = $_SESSION["id"];
+        $stmt = $conn2->prepare("SELECT cart FROM users WHERE id=?");
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $row = $res->fetch_assoc();
+        $dec = json_decode($row['cart']);
+      
+        
+        $total = 0;
+
+        foreach ($dec as $value) {
+            $total += $value->price;
+        }
 }
 
-$total = $_SESSION["total"];
-$cartItems = $_SESSION["cart"];
+
+
 
 if(isset($_POST["submit"])){
 
@@ -35,8 +58,14 @@ if(isset($_POST["submit"])){
       Phone Number: $user_phone <br><br>
       Total Amount: KSH <b>$total</b> <br><br>
       Cart items: <br><br> \n";
-      foreach ($cartItems as $item){
-          $message .= "Name: " . $item["name"] . "<br>Price: KSH" . $item["price"] . "<br><br>" . "\n";
+      if (!isset($_SESSION["id"])) {
+        foreach ($cartItems as $item){
+        $message .= "Name: " . $item["name"] . "<br>Price: KSH" . $item["price"] . "<br><br>" . "\n";
+      }
+      }else{
+        foreach ($dec as $item){
+        $message .= "Name: " . $item->name . "<br>Price: KSH" . $item->price . "<br><br>" . "\n";
+      }
       }
       
 

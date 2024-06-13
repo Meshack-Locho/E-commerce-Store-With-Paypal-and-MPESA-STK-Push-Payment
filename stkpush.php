@@ -107,12 +107,9 @@ if ($enc->ResponseCode === "0") {
 
     echo "<div class='checkout-status'>
         <h2>$enc->CustomerMessage</h2>
-        <h2>$curl_res</h2>
+        <h2>You will receive a prompt on your phone, Enter your Mpesa Pin to validate the transaction and click Continue</h2>
+        <a href='query.php'>Continue</a>
       </div>";
-
-      sleep(5);
-
-      header("Location: query.php");
 
       $_SESSION["reqId"] = $CheckoutRequestID;
 }else{
