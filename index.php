@@ -172,7 +172,7 @@ if (!isset($_SESSION["id"])) {
                             <li id="user-name"><?= $_SESSION["fname"]?> <i class="fa-solid fa-angle-down"></i>
                             
                             <div class="user-options">
-                                <a href="dashboard.php">Dashboard</a>
+                                <a href="user/dashboard.php">Dashboard</a>
                                 <a href="logout.php">Logout</a>
                             </div>
                             </li>

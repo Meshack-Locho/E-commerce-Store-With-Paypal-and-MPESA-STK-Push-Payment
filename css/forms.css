@@ -14,11 +14,21 @@ body{
     display: flex;
     flex-direction: column;
     gap: 20px;
-    justify-content: center;
     padding: 10px;
+    justify-content: center;
     position: relative;
     overflow: hidden;
-    background-color: rgb(202, 203, 255);
+    background-color: rgb(179, 180, 252);
+}
+.scrollable{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 50px 10px;
+    position: relative;
+    overflow-y: scroll;
 }
 .wrapper h1, p{
     z-index: 1;

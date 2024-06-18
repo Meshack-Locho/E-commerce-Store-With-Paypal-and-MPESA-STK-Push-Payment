@@ -21,6 +21,8 @@ if (isset($_POST["submit"])) {
             $_SESSION["email"] = $user_data["email"];
             $_SESSION["id"] = $user_data["id"];
             $_SESSION["phone"] = $user_data["phone"];
+            $_SESSION["county"] = $user_data["city"];
+            $_SESSION["address"] = $user_data["address"];
             if (isset($_SESSION['redirect_to'])) {
                     $redirect_to = $_SESSION['redirect_to'];
                     unset($_SESSION['redirect_to']);

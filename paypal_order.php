@@ -135,7 +135,7 @@ $data = array(
 
 
   //shows if an error occurs
-  if(curl_errno($ch)){
+  if(curl_error($ch)){
     echo 'Curl error: ' . curl_error($ch);
     }
 
