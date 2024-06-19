@@ -393,6 +393,49 @@ main{
     justify-content: center;
     background-color: rgb(109, 112, 255);
 }
+.message{
+    width: 90%;
+    padding: 10px;
+    height: 70px;
+    border: 1px solid rgb(109, 112, 255);
+    overflow-y: hidden;
+    cursor: pointer;
+}
+.message h5{
+    color: rgb(109, 112, 255);
+}
+.message-display{
+    position: fixed;
+    left: 10%;
+    top: 10%;
+    width: 80%;
+    height: 80%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    background-color: rgb(162, 163, 251);
+    color: black;
+    z-index: 3;
+    box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.352);
+    border-radius: 10px;
+    scale: 0;
+    transition: all 1s ease;
+}
+.message-display.active{
+    scale: 1;
+}
+.message-display h2{
+    text-align: center;
+}
+.close-message{
+    position: absolute;
+    top: 2%;
+    right: 2%;
+    color: white;
+    cursor: pointer;
+    font-size: 30px;
+}
 footer{
     width: 100%;
     background-color: #080808;
@@ -404,4 +447,10 @@ footer{
     align-items: center;
     justify-content: center;
     padding: 50px 0;
+}
+
+@media screen and (max-width: 800px) {
+    .message-display{
+        left: 4%;
+    }
 }

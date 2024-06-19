@@ -5,6 +5,8 @@ include "db.php";
 
 if (!isset($_SESSION["id"])) {
     header("Location: http://localhost:8080/mysite/ec-website/login.php");
+}else{
+    $user_id = $_SESSION["id"];
 }
 
 ?>
@@ -62,22 +64,61 @@ if (!isset($_SESSION["id"])) {
                 <a href="orders.php"><i class="fa-solid fa-bag-shopping"></i> Orders</a>
                 <a href="inbox.php"><i class="fa-solid fa-envelope"></i> Inbox</a>
                 <a href="recents.php"><i class="fa-solid fa-clock-rotate-left"></i> Recently Viewed</a>
-                <a href="newsletter.php"><i class="fa-solid fa-newspaper"></i> Subscriptions</a>
+                <a href="subscriptions.php"><i class="fa-solid fa-newspaper"></i> Subscriptions</a>
                 <a href="http://localhost:8080/mysite/ec-website/logout.php" id="logout-link"><i class="fa-solid fa-person-through-window"></i> Logout</a>
             </div>
 
             <div class="messages">
                 <h3>Inbox</h3>
                 <div class="inbox">
-                    <div class="no-messages">
-                        <i class="fa-solid fa-envelope"></i>
-                        <h4>You currenly don't have any messages</h4>
-                        <p>Here, you will be able to see any messages we send you.</p>
-                        <a href="http://localhost:8080/mysite/ec-website/index.php">Shop Now</a>
-                    </div>
+                    <?php
+                    
+                        $stmt = $conn2->prepare("SELECT * FROM user_messages WHERE receiver_id=? ORDER BY time DESC");
+                        $stmt->bind_param("i", $user_id);
+                        $stmt->execute();
+                        $results = $stmt->get_result();
+
+                        if ($results->num_rows > 0) {
+                            while ($messages = $results->fetch_assoc()) {
+                                $messageId = $messages["id"];
+                                $sender = $messages["sender"];
+                                $subject = $messages["subject"];
+                                $message = $messages["message"];
+                                $time = new DateTime($messages["time"]);
+                                $formattedTime =  $time->format('d - Y H:i A');
+                                $time = DateTime::createFromFormat('d - Y H:i A', $formattedTime);
+
+                                echo "<div class='message' data-message-id='$messageId '>
+                                    
+                                        <h4>From: ".htmlspecialchars($sender)."</h4>
+                                        <h5>".htmlspecialchars($subject)."</h5>
+                                        <p>".htmlspecialchars($message)."</p>
+                                        <h6>".htmlspecialchars($time->format("F") . ", ". $formattedTime)."</h6>
+
+                                      </div>";
+                            }
+                        }else{ ?>
+                            <div class="no-messages">
+                                <i class="fa-solid fa-envelope"></i>
+                                <h4>You currenly don't have any messages</h4>
+                                <p>Here, you will be able to see any messages we send you.</p>
+                                <a href="http://localhost:8080/mysite/ec-website/index.php">Shop Now</a>
+                            </div>
+                        <?php }
+                    
+                    ?>
                 </div>
             </div>
         </section>
+
+        <div class="message-display">
+            <i class="fa-solid fa-circle-xmark close-message"></i>
+            <h2>Message Body</h2>
+            <h4></h4>
+            <h5 id="subject"></h5>
+            <p></p>
+            <h6></h6>
+        </div>
 
         <section class="recommendations">
             <h3>Recommended for you</h3>
@@ -114,5 +155,41 @@ if (!isset($_SESSION["id"])) {
     </footer>
 
     <script src="http://localhost:8080/mysite/ec-website/js/user.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+// Add an event listener to message elements
+document.querySelectorAll('.message').forEach(message => {
+    message.addEventListener('click', function() {
+        // Get the message ID from a data attribute
+        const messageId = this.getAttribute('data-message-id');
+        
+        // Send the message ID to the server to update the status
+        markAsRead(messageId);
+    });
+});
+
+function markAsRead(messageId) {
+    // Make an AJAX request to update the message status
+    fetch('update_message_status.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `message_id=${messageId}`,
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            console.log(`Message ${messageId} marked as read.`);
+            // Optionally, update the UI to reflect the read status
+            document.querySelector(`[data-message-id='${messageId}']`).classList.add('read');
+        } else {
+            console.error('Error updating message status:', data.message);
+        }
+    })
+    .catch(error => console.error('Request failed', error));
+}
+</script>
 </body>
 </html>
