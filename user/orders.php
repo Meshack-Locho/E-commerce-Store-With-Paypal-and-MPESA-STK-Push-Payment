@@ -69,12 +69,46 @@ if (!isset($_SESSION["id"])) {
             <div class="order-details">
                 <h3>Orders Overview</h3>
                 <div class="orders">
+                    <?php
+                    
+                        $stmt = $conn2->prepare("SELECT * FROM user_orders ORDER BY time DESC");
+                        $stmt->execute();
+                        $results = $stmt->get_result();
+                        if ($results->num_rows>0) {
+                            while ($row=$results->fetch_assoc()) {
+                                $time = new DateTime($row["time"]);
+                                $formattedTime =  $time->format('d / Y H:i A');
+                                $time = DateTime::createFromFormat('d / Y H:i A', $formattedTime);
+                                $deliveryType = $row["delivery_type"];
+                                $total = number_format($row["total"]) ;
+                                $numberofItems = $row["no_of_items"];
+                                $status = $row["status"];
+                                $paymentMethod = $row["payment_method"];
+                                echo "<div class='order'>
+                                        <div class='order-header'>
+                                            <h4>Order</h4>
+                                            <h5>Order Created on: ".htmlspecialchars($time->format("F") . ", " . $formattedTime)."</h5>    
+                                        </div>
+                                        <div class='order-det'>
+                                            <h5>Total Paid: KSH ".htmlspecialchars($total)."</h5>    
+                                            <h5>Number of items Purchased: ".htmlspecialchars($numberofItems)."</h5>    
+                                            <h5>Order Status: ".htmlspecialchars($status)."</h5>    
+                                            <h5>Payment Method used: ".htmlspecialchars($paymentMethod)."</h5>    
+                                            <h5>Type of Delivery: ".htmlspecialchars($deliveryType)."</h5>
+                                        </div>
+                                      </div>";
+                            }
+                        }else{ ?>
+
                     <div class="no-orders">
                         <i class="fa-solid fa-cart-shopping"></i>
                         <h4>You haven't placed any orders yet</h4>
                         <p>All your orders will be saved here for you to access their state.</p>
                         <a href="http://localhost:8080/mysite/ec-website/index.php">Shop Now</a>
                     </div>
+                        <?php }
+                    ?>
+                    
                 </div>
             </div>
         </section>

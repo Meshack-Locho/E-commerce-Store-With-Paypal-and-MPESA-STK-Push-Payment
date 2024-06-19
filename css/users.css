@@ -200,6 +200,14 @@ main{
 .acc-details h3, .shipping-details h3, .order-details h3, .messages h3, .recents h3, .subscriptions h3{
     padding: 10px;
     border-bottom: 0.1px solid rgb(166, 166, 166);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.recents h3 a{
+    text-decoration: none;
+    color: rgb(88, 91, 251);
+    font-size: 16px;
 }
 .main-details, .loc{
     width: 100%;
@@ -269,7 +277,7 @@ main{
     border: 0.1px solid rgb(166, 166, 166);
     border-radius: 5px;
 }
-.orders, .inbox, .viewed-items, .subscribed{
+.orders, .inbox, .subscribed{
     width: 100%;
     padding: 10px;
     display: flex;
@@ -321,6 +329,69 @@ main{
     border: none;
     background-color: rgb(202, 203, 255);
     border-radius: 10px;
+}
+.order{
+    width: 90%;
+    border: 0.1px solid rgb(166, 166, 166);
+    display: flex;
+    flex-direction: column;
+    
+}
+.order-header{
+    width: 100%;
+    border-bottom: 0.1px solid rgb(166, 166, 166);
+    padding: 10px;
+}
+.order-det{
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.viewed-items{
+    width: 100%;
+    height: 400px;
+    overflow-y: scroll;
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    
+}
+.products-viewed{
+    width: 100%;
+    height: auto;
+    display: flex;
+    padding: 10px;
+}
+.products-viewed a{
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    justify-content: space-between;
+    text-decoration: none;
+    color: black;
+    border: 1px solid rgb(109, 112, 255);
+    width: 90%;
+    border-radius: 5px;
+}
+.products-viewed a img{
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+}
+.alerts{
+    position: fixed;
+    right: 10%;
+    top: 15%;
+    z-index: 3;
+    width: 200px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(109, 112, 255);
 }
 footer{
     width: 100%;

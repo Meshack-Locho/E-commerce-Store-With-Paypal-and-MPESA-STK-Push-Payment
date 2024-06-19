@@ -121,7 +121,6 @@ if (!isset($_SESSION["id"])) {
             $stmt->bind_param("si", $updated_cart_json, $user_id);
             $stmt->execute();
             $stmt->close();
-            echo "Item does not exist";
         
 
 

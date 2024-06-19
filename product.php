@@ -17,7 +17,9 @@ if (isset($_GET["id"])) {
     $res = $stmt->get_result();
 
 }
-
+if (isset($_SESSION["id"])) {
+    $user_id = $_SESSION["id"];
+}
 ?>
 
 <!DOCTYPE html>
@@ -108,7 +110,27 @@ if (isset($_GET["id"])) {
                                         <input type='submit' name='add_to_cart' value='Add to Cart' id='add-to-cart-btn'>
                                 </form>
                               </div>";
+                              
+                }
+                if (isset($_SESSION["id"])) {
+                    $stmt = $conn->prepare("SELECT * FROM all_products WHERE id=?");
+                    $stmt->bind_param("i", $product_id);
+                    $stmt->execute();
+                    $res = $stmt->get_result();
+
+                    if ($res->num_rows > 0) {
+                        $product = $res->fetch_assoc();
+                        $stmt=$conn2->prepare("INSERT INTO recent_views (product_id, user_id, name, image, price) VALUES (?,?,?,?,?) 
+                        ON DUPLICATE KEY UPDATE time_viewed = CURRENT_TIMESTAMP ");
+                        $stmt->bind_param("iissi", $product_id, $user_id, $product["name"], $product["image"], $product["price"]);
+                        $stmt->execute();
+
+                        $stmt->close();
                     }
+                    
+                }
+                $conn->close();
+                $conn2->close();
                 }
                 
                 
@@ -251,6 +273,32 @@ if (isset($_GET["id"])) {
             })
             
         }
+
+//         document.addEventListener('DOMContentLoaded', function() {
+//         const productId = <?php echo $product_id?>; // Replace with the actual product ID
+//         const userId = <?php echo $user_id?>; // Replace with the actual user ID if available
+
+//     fetch('product.php', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/x-www-form-urlencoded'
+//         },
+//         body: `product_id=${productId}&user_id=${userId}`
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.status === 'success') {
+//             console.log('View logged successfully');
+//         } else {
+//             console.log('Failed to log view');
+//         }
+//     })
+//     .catch(error => console.error('Error:', error));
+
+   
+// });
+
+
     </script>
 </body>
 </html>

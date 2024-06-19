@@ -149,7 +149,7 @@ if (!isset($_SESSION['id'])) {
 
             <div>
                 <label for="address">Address</label>
-                <input type="text" name="address" id="address" placeholder="Enter Your address" required>
+                <input type="text" name="address" id="address" value="<?= $_SESSION["address"]?>" required>
             </div>
 
 
@@ -167,11 +167,7 @@ if (!isset($_SESSION['id'])) {
             <div>
                 <label for="city">City</label>
                 <select name="city" id="city" required>
-                    <option value="select place">Choose City</option>
-                    <option value="Nairobi">Nairobi</option>
-                    <option value="Mombasa">Mombasa</option>
-                    <option value="Nakuru">Nakuru</option>
-                    <option value="Kisumu">Kisumu</option>
+                    <option value="<?= $_SESSION["county"]?>"><?= $_SESSION["county"]?></option>
                 </select>
             </div>
 
@@ -185,11 +181,11 @@ if (!isset($_SESSION['id'])) {
                 <span>
                     <div>
                     <label for="normal">Normal Delivery</label>
-                    <input type="radio" name="Order-type" id="normal" value="Normal-delivery">
+                    <input type="radio" name="Order-type" id="normal" value="Normal-delivery" required>
                     </div>
                     <div>
                     <label for="overnight">Overnight delivery</label>
-                    <input type="radio" name="Order-type" id="overnight" value="Overnight-delivery">
+                    <input type="radio" name="Order-type" id="overnight" value="Overnight-delivery" required>
                     </div>
                 </span>
             </div>
@@ -388,6 +384,8 @@ if (!isset($_SESSION['id'])) {
             checkoutOptions.classList.add("inactive")
         })
     </script>
+
+    <script src="js/user.js"></script>
     
 </body>
 </html>

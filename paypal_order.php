@@ -3,7 +3,7 @@
 session_start();
 //HERE IS INCLUDING THE ACCESSTOKEN WHICH IS IN PAYPAL_ACCESS_TOKEN.PHP
 include("paypal_access_token.php");
-include "http://localhost:8080/mysite/ec-website/db.php";
+include "db.php";
 
 if (!isset($_SESSION["id"])) {
   if (!isset($_SESSION['cart'])) {
@@ -32,27 +32,33 @@ if (!isset($_SESSION["id"])) {
       }
 }
 
+$usdtotal = $total/128;
+$formatedTotal = number_format($usdtotal, 2);
 $user_phone = $_POST["phone"];
 $email = $_POST["email"];
 $firstName = $_POST["first-name"];
 $secondName = $_POST["second-name"];
 $address = $_POST["address"];
-$typeofDelivery = $_POST["Order-type"];
+if ($_POST["Order-type"]) {
+  $typeofDelivery = $_POST["Order-type"];
+}else{
+  $typeofDelivery = "Not Choosen";
+}
 $paymentType = $_POST["payment-type"];
 $country = $_POST["country"];
 $city = $_POST["city"];
 $postal_code = $_POST["postal-code"];
 
-$countryCodes = array(
-  "Kenya" => "KE",
-  "Tanzania" => "TZ",
-  "Uganda" => "UG",
-  "Ethiopia" => "ET"
-);
+// $countryCodes = array(
+//   "Kenya" => "KE",
+//   "Tanzania" => "TZ",
+//   "Uganda" => "UG",
+//   "Ethiopia" => "ET"
+// );
 
-if (isset($countryCodes[$country])) {
-  $countryCodes = $countryCodes[$country];
-}
+// if (isset($countryCodes[$country])) {
+//   $countryCodes = $countryCodes[$country];
+// }
 
 
 //GETTING ACCESS TO THE PAYMENT API URL
@@ -79,12 +85,12 @@ $data = array(
                     "line1" => "$address",
                     "city" => "$city",
                     "admin_area_2" => "$city", 
-                    "country_code" => "$countryCodes",
+                    "country_code" => "KE",
                     "postal_code" => "$postal_code"
             )),
         "amount" => array(
           "currency_code" => "USD",
-          "value" => "$total"
+          "value" => "$formatedTotal"
         )
       )
     ),
@@ -145,12 +151,12 @@ $data = array(
 
 
   //response in json format
-  echo $response . '<br><br>';
+  // echo $response . '<br><br>';
 
   //response decoded - Not a JSON Format anymore, rather, it's an object. It can also be converted into an array
   $decode = json_decode($response);
 
-  var_dump($decode); '<br><br>';
+  // var_dump($decode); '<br><br>';
 
   //Getting the links for user action from the decoded code
   $links = $decode->links;
@@ -162,12 +168,7 @@ $data = array(
     $method = $link->method;
   }
 
-  echo "Link : <a href='$href' target='_blank'>$href</a> <br><br>";
-  echo "Rel : $rel <br><br>";
-  echo "Method : $method <br><br>";
-
-
-  //getting buyer's name
+    //getting buyer's name
 
   $names = $decode->payment_source->paypal->name;
 
@@ -176,7 +177,88 @@ $data = array(
     $surname = $names->surname;
   }
 
-  echo "First Name: $first_name <br><br>";
-  echo "Second Name: $surname";
+  $status = $decode->status;
 
+  if ($status !== "PAYER_ACTION_REQUIRED") {
+    echo "Payment Failed, Please try again";
+    $orderStatus = "Unsuccesful";
+  }else{
+        $headers = "From: meshacklocho@meshacklocho.co.ke\r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= "Content-type: text/html; charset=iso-8859-1\r\n"; 
+      
+        $message = "
+            <h2>New Order:</h2> <br><br>
+            Name: $firstName $secondName <br>
+            Email: $email <br>
+            Type of delivery: $typeofDelivery <br>
+            Payment Method: $paymentType <br>
+            Address: $address <br>
+            City: $city <br>
+            Postal-code: $postal_code <br>
+            Phone Number: $user_phone <br><br>
+            Total: $total <br><br>
+            Cart items: <br><br> \n";
+        if (!isset($_SESSION["id"])) {
+                foreach ($cartItems as $item){
+                $message .= "Name: " . $item["name"] . "<br>Price: KSH " . $item["price"] . "<br><br>" . "\n";
+            }
+        }else{
+            foreach ($dec as $item){
+                $message .= "Name: " . $item->name . "<br>Price: KSH " . $item->price . "<br><br>" . "\n";
+            }
+        }
+        if (mail("meshacklocho5@gmail.com", "ORDERED ITEMS", $message, $headers)) {
+          echo "<div class='checkout-status'>
+                  <h3>Thank you $first_name, Your Order has been Sent Successfully!!</h3>
+                  <a href='$href' target='_blank'>Proceed to Paypal</a>
+                </div>";
+        }else{
+          echo "<div class='checkout-status'>
+                  <h3>Order Not Sent Please Try Again. If the Problem Persists, Call us now at: <a href='tel:+25472345678'>+25472345678</a></h3>
+                  <a href='$href'>Proceed to Paypal</a>
+                </div>";
+        }
+        $orderStatus = "Successful";
+        // var_dump($dec). "<br><br>";
+
+        $allItems = get_object_vars($dec);
+        $numberofItems = count($allItems);
+
+        // echo "NO: ". $numberofItems;
+
+        if (isset($_SESSION["id"])) {
+          $stmt = $conn2->prepare("INSERT INTO user_orders (user_id, delivery_type, total, status, payment_method, no_of_items) VALUES (?,?,?,?,?,?)");
+          $stmt->bind_param('isssss', $user_id, $typeofDelivery, $total, $orderStatus, $paymentType, $numberofItems);
+          $stmt->execute();
+        }
+
+  }
+
+
+
+  
+
+  
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paypal Order Status</title>
+  <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Josefin Sans">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body{
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+  
+</body>
+</html>

@@ -6,6 +6,20 @@ include "db.php";
 if (!isset($_SESSION["id"])) {
     header("Location: http://localhost:8080/mysite/ec-website/login.php");
 }
+$user_id = $_SESSION["id"];
+
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'clear') {
+    $stmt = $conn2->prepare("DELETE FROM recent_views WHERE user_id=?");
+    $stmt->bind_param("i", $user_id); 
+    if ($stmt->execute()) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'error' => $stmt->error]);
+    }
+    $stmt->close();
+    exit;
+}
 
 ?>
 
@@ -67,14 +81,39 @@ if (!isset($_SESSION["id"])) {
             </div>
 
             <div class="recents">
-                <h3>Orders Overview</h3>
-                <div class="viewed-items">
-                    <div class="no-viewed-items">
-                        <i class="fa-solid fa-clock-rotate-left"></i> 
-                        <h4>You haven't viewed an item</h4>
-                        <p>All the recent products you have viewed, will appear here.</p>
-                        <a href="http://localhost:8080/mysite/ec-website/index.php">Shop Now</a>
-                    </div>
+                <h3><span>Recently Viewed Items</span><button id="clear-all">Clear</button></h3>
+                <div class="viewed-items" id="recently-viewed">
+                    <?php
+                        $stmt = $conn2->prepare("SELECT * FROM recent_views WHERE user_id=? ORDER BY time_viewed DESC LIMIT 7");
+                        $stmt->bind_param("i", $user_id);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+
+                        if ($result->num_rows > 0) {
+                            while ($product = $result->fetch_assoc()) {
+                                $product_id = $product["product_id"];
+                                $product_name = $product["name"];
+                                $product_img = $product["image"];
+                                $product_price = number_format($product["price"]);
+                                echo "<div class='products-viewed'>
+                                        <a href='http://localhost:8080/mysite/ec-website/product.php?id= $product_id'>
+                                            <img src='http://localhost:8080/mysite/ec-website/$product_img'>
+                                            <h5>".htmlspecialchars($product_name)."</h5>
+                                            <h5>Price: KSH ".htmlspecialchars($product_price)."</h5>
+                                        </a>
+                                      </div>";
+                            }
+                        }else{ ?>
+                            <div class="no-viewed-items">
+                                <i class="fa-solid fa-clock-rotate-left"></i> 
+                                <h4>You haven't viewed an item</h4>
+                                <p>All the recent products you have viewed, will appear here.</p>
+                                <a href="http://localhost:8080/mysite/ec-website/index.php">Shop Now</a>
+                            </div>
+                        <?php }
+                    
+                    
+                    ?>
                 </div>
             </div>
         </section>
@@ -114,5 +153,31 @@ if (!isset($_SESSION["id"])) {
     </footer>
 
     <script src="http://localhost:8080/mysite/ec-website/js/user.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        $('#clear-all').on('click', function(response) {
+            $.ajax({
+                type: 'POST',
+                url: 'recents.php',
+                data: { action: 'clear' },
+                dataType: 'json',
+                success: function(response) {
+                    console.log(response)
+                    if (response.success) {
+                        $('#recently-viewed').empty(); // Clear the UI
+                        alert('Recently viewed items cleared.');
+                        window.location.reload(true)
+                    } else {
+                        alert('Error clearing items.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Request failed: ' + error);
+                }
+            });
+        });
+    </script>
 </body>
 </html>
