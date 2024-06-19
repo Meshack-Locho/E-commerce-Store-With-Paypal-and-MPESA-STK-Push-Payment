@@ -60,9 +60,12 @@ if (!isset($_SESSION["id"])) {
             <div class="options">
                 <a href="dashboard.php"><i class="fa-solid fa-user"></i> My Account</a>
                 <a href="orders.php"><i class="fa-solid fa-bag-shopping"></i> Orders</a>
-                <a href="inbox.php"><i class="fa-solid fa-envelope"></i> Inbox</a>
+                <a href="inbox.php">
+                    <i class="fa-solid fa-envelope"></i> Inbox
+                    <span id="notification-dot" class="notification-dot hide"></span>
+                </a>
                 <a href="recents.php"><i class="fa-solid fa-clock-rotate-left"></i> Recently Viewed</a>
-                <a href="subscriptions.php"><i class="fa-solid fa-newspaper"></i> Subscriptions</a>
+                <a href="subscriptions.php" class="selected-page"><i class="fa-solid fa-newspaper"></i> Subscriptions</a>
                 <a href="http://localhost:8080/mysite/ec-website/logout.php" id="logout-link"><i class="fa-solid fa-person-through-window"></i> Logout</a>
             </div>
 
@@ -118,5 +121,6 @@ if (!isset($_SESSION["id"])) {
     </footer>
 
     <script src="http://localhost:8080/mysite/ec-website/js/user.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 </html>

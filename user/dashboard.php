@@ -26,6 +26,7 @@ if (!isset($_SESSION["id"])) {
 
     <header>
     <div class="navigation">
+            <i class="fa-solid fa-bars submenu-toggle"></i>
             <a href="" class="logo">
                 <img src="http://localhost:8080/mysite/ec-website/images/hero/hero-4.png" alt="">
                 <h2>Mellow Watches</h2>
@@ -54,15 +55,47 @@ if (!isset($_SESSION["id"])) {
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span id="items-count">0</span>
             </a>
+
+            <i class="fa-solid fa-circle-xmark menu-toggle"></i>
+        </div>
+
+        <div class="mobile-menu">
+            <i class="fa-solid fa-xmark menu-toggle"></i>    
+            <nav>
+            
+                <ul>
+                        <li><a href="http://localhost:8080/mysite/ec-website/index.php">Home</a></li>
+                        <li><a href="http://localhost:8080/mysite/ec-website/checkout.php">Checkout</a></li>
+                        <li><a href="http://localhost:8080/mysite/ec-website/logout.php">Logout</a></li>
+                        <li>
+                            <a href="http://localhost:8080/mysite/ec-website/cart.php" class="cart-toggle cart-icon">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <span id="items-count" class="items-count">0</span>
+                            </a>
+                        </li>
+                </ul>
+            </nav>
+
+            <div class="search-panel">
+                <form action="http://localhost:8080/mysite/ec-website/search.php" method="get">
+                    <input type="search" name="search" id="search" placeholder="Search for watches">
+                    <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+            </div>
+
         </div>
     </header>
 
     <main>
         <section class="acc-info">
             <div class="options">
-                <a href="dashboard.php"><i class="fa-solid fa-user"></i> My Account</a>
+                <span class="submenu-toggle submenu-close">X</span>
+                <a href="dashboard.php" class="selected-page"><i class="fa-solid fa-user"></i> My Account</a>
                 <a href="orders.php"><i class="fa-solid fa-bag-shopping"></i> Orders</a>
-                <a href="inbox.php"><i class="fa-solid fa-envelope"></i> Inbox</a>
+                <a href="inbox.php">
+                    <i class="fa-solid fa-envelope"></i> Inbox
+                    <span id="notification-dot" class="notification-dot hide"></span>
+                </a>
                 <a href="recents.php"><i class="fa-solid fa-clock-rotate-left"></i> Recently Viewed</a>
                 <a href="subscriptions.php"><i class="fa-solid fa-newspaper"></i> Subscriptions</a>
                 <a href="http://localhost:8080/mysite/ec-website/logout.php" id="logout-link"><i class="fa-solid fa-person-through-window"></i> Logout</a>
@@ -122,5 +155,6 @@ if (!isset($_SESSION["id"])) {
         <h5>Created by, Meshack Locho</h5>
     </footer>
     <script src="http://localhost:8080/mysite/ec-website/js/user.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 </html>
