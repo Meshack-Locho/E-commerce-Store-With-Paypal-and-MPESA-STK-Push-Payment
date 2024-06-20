@@ -3,6 +3,14 @@
 session_start();
 include "db.php";
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$item_name = $_POST['item_name'];
+$item_price = $_POST['item_price'];
+$item_image = $_POST['item_image'];
+
 if (!isset($_SESSION["id"])) {
 
     if (!isset($_SESSION['cart'])) {
@@ -38,22 +46,27 @@ if (!isset($_SESSION["id"])) {
         }
         return $total;
     }
+    $session_cart = $_SESSION["cart"];
     
     $total = calcTotal();
     
     $_SESSION["total"] = $total;
 }else{
 
+   
+
     //Initial Empty Cart at first Sign up
+
 
     $myCart = [];
     
-    if (isset($_POST['add_to_cart'])) {
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
         //ADD TO CART IS CLICKED
 
         //ITEM ID FROM A HIDDEN FORM INPUT
         $item_id = $_POST['item_id'];
 
+       
         //ALL PRODUCTS FROM THE DATABASE WHERE ID IS EQUAL TO THE SELECTED ITEM'S ID
 
         $sql = "SELECT * FROM all_products WHERE id = ?";
@@ -68,8 +81,8 @@ if (!isset($_SESSION["id"])) {
         $product_name = $row['name'];
         $product_price = $row['price'];
         $product_image = $row["image"];
+        $quantity = $_POST["quantity"];
 
-//Retrieving existing cart data from the database and decode it
 
         $user_id = $_SESSION['id']; // user ID stored in session
 
@@ -85,28 +98,20 @@ if (!isset($_SESSION["id"])) {
 
         $cart = json_decode($row['cart'], true);
 
-//Adding the new product to the cart data
+        if ($quantity) {
+            $product_price = $product_price * $quantity;
+        }else{
+            $product_price = $product_price;
+        }
+
+        
+            //Adding the new product to the cart data
         $cart[] = array(
             'name' => $product_name,
             'id' => $product_id,
             'price' => $product_price,
             'image' => $product_image
         );
-
-        $stmt = $conn2->prepare("SELECT cart FROM users WHERE id=?");
-        $stmt->bind_param("i", $user_id);
-        $stmt->execute();
-        $res = $stmt->get_result();
-        $row = $res->fetch_assoc();
-        $dec = json_decode($row['cart']);
-      
-        $total = 0;
-
-        foreach ($dec as $value) {
-            $total += $value->price;
-        }
-
-        echo $total;
 
         
 
@@ -117,12 +122,25 @@ if (!isset($_SESSION["id"])) {
             $sql = "UPDATE users SET cart = ? WHERE id = ?";
             $stmt = $conn2->prepare($sql);
             $stmt->bind_param("si", $updated_cart_json, $user_id);
-            $stmt->execute();
+            
+            if ($stmt->execute()) {
+                if ($quantity>0) {
+                    echo "$quantity of $product_name has been added to your cart";
+                }else{
+                    echo "1 of $product_name has been added to your cart";
+                }
+            }else{
+                echo "An error occured while adding the item to the cart, please try again.";
+            }
             $stmt->close();
+        
+
+
     }
     
     
     
 }
+
 
 ?>

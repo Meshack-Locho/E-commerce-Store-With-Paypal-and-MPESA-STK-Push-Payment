@@ -148,7 +148,7 @@ if (!isset($_SESSION["id"])) {
                     </a>
                     <form method='post' action=''>
                           <input type='hidden' name='remove_item_id' value='{$item['id']}'>
-                          <input type='submit' name='remove_from_cart' value='Remove'>
+                          <input type='submit' name='remove_from_cart' value='Remove' onsubmit='preventRel()'>
                     </form><br>
                     </div>";
                 }
@@ -233,6 +233,8 @@ if (!isset($_SESSION["id"])) {
 ?>
     </div>
 </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script src="js/index.js"></script>
 </body>

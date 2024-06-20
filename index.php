@@ -11,124 +11,129 @@ include("db.php");
 
 
 // Check if item is added to cart
-if (!isset($_SESSION["id"])) {
+// if (!isset($_SESSION["id"])) {
 
-    if (!isset($_SESSION['cart'])) {
-        $_SESSION['cart'] = array();
-    }
+//     if (!isset($_SESSION['cart'])) {
+//         $_SESSION['cart'] = array();
+//     }
 
-    function add_to_cart($item_id, $item_image, $item_name, $item_price) {
-        $_SESSION['cart'][] = array(
-            'id' => $item_id,
-            'image' => $item_image,
-            'name' => $item_name,
-            'price' => $item_price
-        );
-    }
+//     function add_to_cart($item_id, $item_image, $item_name, $item_price) {
+//         $_SESSION['cart'][] = array(
+//             'id' => $item_id,
+//             'image' => $item_image,
+//             'name' => $item_name,
+//             'price' => $item_price
+//         );
+//     }
     
     
-    // Function to add item to cart
+//     // Function to add item to cart
     
-    if (isset($_POST['add_to_cart'])) {
-        $item_id = $_POST['item_id'];
-        $item_name = $_POST['item_name'];
-        $item_price = $_POST['item_price'];
-        $item_image = $_POST['item_image'];
-        add_to_cart($item_id, $item_image, $item_name, $item_price);
-    }
+//     if (isset($_POST['add_to_cart'])) {
+//         $item_id = $_POST['item_id'];
+//         $item_name = $_POST['item_name'];
+//         $item_price = $_POST['item_price'];
+//         $item_image = $_POST['item_image'];
+//         add_to_cart($item_id, $item_image, $item_name, $item_price);
+//     }
     
-    $cartCount = count($_SESSION["cart"]);
+//     $cartCount = count($_SESSION["cart"]);
     
-    function calcTotal(){
-        $total = 0;
-        foreach ($_SESSION['cart'] as $item){
-            $total += $item['price'];
-        }
-        return $total;
-    }
-    $session_cart = $_SESSION["cart"];
+//     function calcTotal(){
+//         $total = 0;
+//         foreach ($_SESSION['cart'] as $item){
+//             $total += $item['price'];
+//         }
+//         return $total;
+//     }
+//     $session_cart = $_SESSION["cart"];
     
-    $total = calcTotal();
+//     $total = calcTotal();
     
-    $_SESSION["total"] = $total;
-}else{
+//     $_SESSION["total"] = $total;
+// }else{
 
-    //Initial Empty Cart at first Sign up
+//     //Initial Empty Cart at first Sign up
 
-    $myCart = [];
+//     $myCart = [];
     
-    if (isset($_POST['add_to_cart'])) {
-        //ADD TO CART IS CLICKED
+//     if (isset($_POST['add_to_cart'])) {
+//         //ADD TO CART IS CLICKED
 
-        //ITEM ID FROM A HIDDEN FORM INPUT
-        $item_id = $_POST['item_id'];
+//         //ITEM ID FROM A HIDDEN FORM INPUT
+//         $item_id = $_POST['item_id'];
 
-        //ALL PRODUCTS FROM THE DATABASE WHERE ID IS EQUAL TO THE SELECTED ITEM'S ID
+//         //ALL PRODUCTS FROM THE DATABASE WHERE ID IS EQUAL TO THE SELECTED ITEM'S ID
 
-        $sql = "SELECT * FROM all_products WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $item_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
+//         $sql = "SELECT * FROM all_products WHERE id = ?";
+//         $stmt = $conn->prepare($sql);
+//         $stmt->bind_param("i", $item_id);
+//         $stmt->execute();
+//         $result = $stmt->get_result();
+//         $row = $result->fetch_assoc();
 
-        //PRODUCT INFORMATION ACCORING TO SELECTED ID
-        $product_id = $row['id'];
-        $product_name = $row['name'];
-        $product_price = $row['price'];
-        $product_image = $row["image"];
-        $quantity = $_POST["quantity"];
+//         //PRODUCT INFORMATION ACCORING TO SELECTED ID
+//         $product_id = $row['id'];
+//         $product_name = $row['name'];
+//         $product_price = $row['price'];
+//         $product_image = $row["image"];
+//         $quantity = $_POST["quantity"];
 
-//Retrieving existing cart data from the database and decode it
+// //Retrieving existing cart data from the database and decode it
 
-        $user_id = $_SESSION['id']; // user ID stored in session
+//         $user_id = $_SESSION['id']; // user ID stored in session
 
-        //EACH USER WITH HIS/HER OWN CART COLUMN STORED IN JSON FORMAT
-        $sql = "SELECT cart FROM users WHERE id = ?";
-        $stmt = $conn2->prepare($sql);
-        $stmt->bind_param("i", $user_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
+//         //EACH USER WITH HIS/HER OWN CART COLUMN STORED IN JSON FORMAT
+//         $sql = "SELECT cart FROM users WHERE id = ?";
+//         $stmt = $conn2->prepare($sql);
+//         $stmt->bind_param("i", $user_id);
+//         $stmt->execute();
+//         $result = $stmt->get_result();
+//         $row = $result->fetch_assoc();
 
-        //Retrieving existing cart data from the database and decode it
+//         //Retrieving existing cart data from the database and decode it
 
-        $cart = json_decode($row['cart'], true);
+//         $cart = json_decode($row['cart'], true);
 
-        if ($quantity) {
-            $product_price = $product_price * $quantity;
-        }else{
-            $product_price = $product_price;
-        }
+//         if ($quantity) {
+//             $product_price = $product_price * $quantity;
+//         }else{
+//             $product_price = $product_price;
+//         }
 
         
-            //Adding the new product to the cart data
-        $cart[] = array(
-            'name' => $product_name,
-            'id' => $product_id,
-            'price' => $product_price,
-            'image' => $product_image
-        );
+//             //Adding the new product to the cart data
+//         $cart[] = array(
+//             'name' => $product_name,
+//             'id' => $product_id,
+//             'price' => $product_price,
+//             'image' => $product_image
+//         );
 
         
 
-//Encoding the updated cart data
-            $updated_cart_json = json_encode($cart);
+// //Encoding the updated cart data
+//             $updated_cart_json = json_encode($cart);
 
-//Updating the database with the updated cart data
-            $sql = "UPDATE users SET cart = ? WHERE id = ?";
-            $stmt = $conn2->prepare($sql);
-            $stmt->bind_param("si", $updated_cart_json, $user_id);
-            $stmt->execute();
-            $stmt->close();
+// //Updating the database with the updated cart data
+//             $sql = "UPDATE users SET cart = ? WHERE id = ?";
+//             $stmt = $conn2->prepare($sql);
+//             $stmt->bind_param("si", $updated_cart_json, $user_id);
+
+//             if ($stmt->execute()) {
+//                 echo "Item added";
+//             }else{
+//                 echo "Item not added";
+//             }
+//             $stmt->close();
         
 
 
-    }
+//     }
     
     
     
-}
+// }
 
 
 
@@ -262,17 +267,17 @@ if (!isset($_SESSION["id"])) {
                 <h4>Price: KSH ' . $row["price"] . '</h4>
                 </a>
             <div class="actions">
-            <form method="post" action="" id="add-to-cart" onsubmit="preventRel()">
-                <input type="hidden" name="item_id" value="'. $row["id"] . '">
-                <input type="hidden" name="item_image" value="'. $row["image"] . '">
-                <input type="hidden" name="item_name" value="'. $row["name"] . '">
-                <input type="hidden" name="item_price" value="'.$row["price"].'">
+            <form id="add-to-cart" method="POST">
+                <input type="hidden" id="item_id" name="item_id" value="'. $row["id"] . '">
+                <input type="hidden" id="item_image" name="item_image" value="'. $row["image"] . '">
+                <input type="hidden" id="item_name" name="item_name" value="'. $row["name"] . '">
+                <input type="hidden" id ="item_price" name="item_price" value="'.$row["price"].'">
                 <div class="qty-cont">
                     <label for="quantity">Qty</label>
                     <input type="number" name="quantity" id="quantity">
                 </div>';
             
-               echo (checkIfItemExists($row["id"], $cart)) ? '<a href="cart.php">Item In Cart - View Cart</a>':'<input type="submit" name="add_to_cart" value="Add to Cart">';
+               echo (checkIfItemExists($row["id"], $cart)) ? '<a href="cart.php">Item In Cart - View Cart</a>':'<input type="submit" name="add_to_cart" value="Add to Cart" class="add-to-cart">';
 
             echo '</form>
             <a href="checkout.php">Buy now</a>
@@ -325,6 +330,15 @@ if (!isset($_SESSION["id"])) {
         
         ?>
     </div>
+
+    <div id="cart-response" class="cart-response">
+        <i class="fa-solid fa-circle-xmark" id="close-dialog"></i>
+        <h3 class="added-item-name"></h3>
+    </div>
+
+    <div id="ajax-loader">
+        <div class="spinner"></div>
+    </div>
     </main>
     
     <footer>
@@ -332,6 +346,7 @@ if (!isset($_SESSION["id"])) {
         <h5>Created by, Meshack Locho</h5>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="js/index.js"></script>
 </body>
 </html>
