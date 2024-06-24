@@ -4,6 +4,7 @@ session_start();
 include "db.php";
 
 if (!isset($_SESSION["id"])) {
+    $_SESSION['redirect_to'] = $_SERVER['REQUEST_URI'];
     header("Location: http://localhost:8080/mysite/ec-website/login.php");
 }
 
@@ -135,7 +136,7 @@ if (!isset($_SESSION["id"])) {
                                             <h5>Order Created on: ".htmlspecialchars($time->format("F") . ", " . $formattedTime)."</h5>    
                                         </div>
                                         <div class='order-det'>
-                                            <h5>Total Paid: KSH ".htmlspecialchars($total)."</h5>    
+                                            <h5>Total: KSH ".htmlspecialchars($total)."</h5>    
                                             <h5>Number of items Purchased: ".htmlspecialchars($numberofItems)."</h5>    
                                             <h5>Order Status: ".htmlspecialchars($status)."</h5>    
                                             <h5>Payment Method used: ".htmlspecialchars($paymentMethod)."</h5>    

@@ -78,8 +78,24 @@ $("#close-dialog").on("click", function () {
     $('#cart-response').removeClass("active")
 })
 
+$(document).on("click", ".menu-toggle", function () {
+    $(".mobile-menu").toggleClass("active")
+})
 
-
+console.log(window.innerWidth)
+window.onscroll = ()=>{
+    if (window.scrollY >= 600 && window.innerWidth > 900) {
+        $(".filters").css({
+            "position":"fixed",
+            "bottom":"30%",
+            "right":"0%"
+        })
+    }else{
+        $(".filters").css({
+            "position":"relative"
+        })
+    }
+}
 
 
 

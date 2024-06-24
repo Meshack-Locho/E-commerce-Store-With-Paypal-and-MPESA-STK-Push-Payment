@@ -4,6 +4,7 @@ session_start();
 include "db.php";
 
 if (!isset($_SESSION["id"])) {
+    $_SESSION['redirect_to'] = $_SERVER['REQUEST_URI'];
     header("Location: http://localhost:8080/mysite/ec-website/login.php");
 }
 
@@ -101,7 +102,7 @@ if (!isset($_SESSION["id"])) {
             </div>
 
             <div class="subscriptions">
-                <h3>Subscriptions</h3>
+                <h3><span>Subscriptions</span></h3>
                 <div class="subscribed">
                     <?php
                     $user_id = $_SESSION["id"];
@@ -119,7 +120,9 @@ if (!isset($_SESSION["id"])) {
                                     <h3>Subscription</h3>
                                     <div>
                                         <h4>".htmlspecialchars($row["subscription_type"])."</h4>
+                                        <a href='https://gmail.com' target='_blank' style='color: rgb(109, 112, 255);'>Open email</a>
                                         <h5>".htmlspecialchars($time->format("F") . ", " . $formattedTime)."</h5>
+                                        <a href='unsubscribe.php?id=".$row["id"]."' id='unsubscribe'>Unsubscribe <i class='fa-solid fa-trash'></i></a>
                                     </div>
                                   </div>";
                         }

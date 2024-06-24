@@ -87,6 +87,12 @@ header{
 #user-name:hover .user-options{
     display: flex;
 }
+#user-name .mob-options{
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
 #signup-link{
     border: 1px solid rgb(202, 203, 255);
     padding: 10px;
@@ -111,6 +117,42 @@ header{
     height: 50px;
     object-fit: contain;
 }
+.fa-bars{
+    visibility: hidden;
+}
+.mobile-menu{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    width: 100%;
+    height: 100vh;
+    background-color: #080808;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 50px 0;
+    transform: translateX(-100%);
+    transition: all 1s ease-in-out;
+}
+.mobile-menu.active{
+    transform: translateX(0);
+}
+.mobile-menu nav ul{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    list-style: none;
+}
+.mobile-menu nav ul a{
+    text-decoration: none;
+    color: rgb(162, 163, 251);
+}
+.mobile-menu i{
+    color: rgb(162, 163, 251);
+    font-size: 30px;
+}
+
 .header-text-big{
     width: 80%;
     height: 100%;
@@ -167,11 +209,19 @@ header{
     padding: 30px 0;
 }
 .filters{
-    width: 30%;
+    width: 15%;
     height: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 20px;
+}
+.filters form select{
+    border: 1px solid black;
+}
+.filters form{
+    display: flex;
+    flex-direction: column;
     gap: 20px;
 }
 .sorts{
@@ -610,6 +660,15 @@ footer{
     .header-text-big{
         font-size: 50px;
         justify-content: space-around;
+        gap: 250px;
+    }
+    .header-text-big div{
+        justify-content: space-between;
+    }
+    #user-name{
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
     }
     .hero-img{
         top: 5%;
@@ -655,5 +714,13 @@ footer{
     }
     .container{
         padding: 10px;
+    }
+    .navigation nav{
+        display: none;
+    }
+    .fa-bars{
+        visibility: visible;
+        color: rgb(162, 163, 251);
+        font-size: 30px;
     }
 }

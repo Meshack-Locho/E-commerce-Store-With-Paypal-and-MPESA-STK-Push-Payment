@@ -137,6 +137,11 @@ include("db.php");
 
 
 
+
+
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -193,6 +198,37 @@ include("db.php");
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span id="items-count">0</span>
             </a>
+
+            <i class="fa-solid fa-bars menu-toggle"></i>
+        </div>
+
+        <div class="mobile-menu">
+            <i class="fa-solid fa-xmark menu-toggle"></i>
+        <nav>
+                <ul>
+                    <li><a href="index.php">Home</a></li>
+                    <li><a href="">Contact</a></li>
+                    
+                    <?php
+                    
+                        if (isset($_SESSION["id"])) { ?>
+                            <li id="user-name">
+                                <a href="user/dashboard.php"><?= $_SESSION["fname"]?></a>
+                                <div class="mob-options">
+                                    <a href="user/dashboard.php">Dashboard</a>
+                                    <a href="logout.php">Logout</a>
+                                </div>
+                            </li>
+                            
+                       <?php }else{ ?>
+                            <li><a href="login.php" id="login-link">Login</a></li>
+                            <li><a href="signup.php" id="signup-link">Sign Up</a></li>
+                       <?php }
+                    
+                    ?>
+                </ul>
+            </nav>
+
         </div>
 
         <div class="header-text-big">
@@ -221,9 +257,23 @@ include("db.php");
         <div class="filters">
             <h3>Sort By</h3>
             <div class="sorts">
-                <button>Prices</button>
-                <button>Name</button>
-                <button>Type</button>
+            <form method="GET" action="index.php">
+                <label for="sort_by">Sort by:</label>
+                <select name="sort_by" id="sort_by">
+                    <option value="price">Price</option>
+                    <option value="name">Name</option>
+                    <option value="rating">Rating</option>
+                    <option value="created_at">Date Added</option>
+                </select>
+
+                <label for="order">Order:</label>
+                <select name="order" id="order">
+                    <option value="ASC">Ascending</option>
+                    <option value="DESC">Descending</option>
+                </select>
+
+                <button type="submit">Sort</button>
+            </form>
             </div>
         </div>
     </div>
@@ -231,7 +281,22 @@ include("db.php");
     <div class="container">
         <?php
 
-            $stmt = $conn->prepare("SELECT * FROM all_products ORDER BY id DESC");
+            $sort_by = isset($_GET['sort_by']) ? $_GET['sort_by'] : 'price';
+            $order = isset($_GET['order']) ? $_GET['order'] : 'ASC';
+
+// Validate sort_by and order values
+            $allowed_sort_by = ['price', 'name'];
+            $allowed_order = ['ASC', 'DESC'];
+
+            if (!in_array($sort_by, $allowed_sort_by)) {
+                $sort_by = 'id';
+            }
+
+            if (!in_array($order, $allowed_order)) {
+                $order = 'DESC';
+            }
+
+            $stmt = $conn->prepare("SELECT * FROM all_products ORDER BY $sort_by $order");
             $stmt->execute();
             $res = $stmt->get_result();
 
@@ -239,16 +304,17 @@ include("db.php");
             if (isset($_SESSION["id"])) {
                 $user_id = $_SESSION['id'];
                 //EACH USER WITH HIS/HER OWN CART COLUMN STORED IN JSON FORMAT
-            $sql = "SELECT cart FROM users WHERE id = ?";
-            $stmt = $conn2->prepare($sql);
-            $stmt->bind_param("i", $user_id);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $row = $result->fetch_assoc();
+                $sql = "SELECT cart FROM users WHERE id = ?";
+                $stmt = $conn2->prepare($sql);
+                $stmt->bind_param("i", $user_id);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $row = $result->fetch_assoc();
 
-        //Retrieving existing cart data from the database and decode it
+                //Retrieving existing cart data from the database and decode it
 
-            $cart = json_decode($row['cart'], true);
+                $cart = json_decode($row['cart'], true);
+            }
 
             function checkIfItemExists($itemId, $cartItems){
                 foreach ($cartItems as $items) {
@@ -260,7 +326,7 @@ include("db.php");
             }
             while ($row=$res->fetch_assoc()) {
                 
-            echo '<div class="items">
+            echo '<div class="items" title='.$row["name"].' data-sort='.$row["price"].'>
                 <a href="product.php?id='.$row["id"].'">
                 <img src="'. $row["image"] . '" alt="" class="item-images">
                 <h3>'. $row["name"] . '</h3>
@@ -277,7 +343,11 @@ include("db.php");
                     <input type="number" name="quantity" id="quantity">
                 </div>';
             
-               echo (checkIfItemExists($row["id"], $cart)) ? '<a href="cart.php">Item In Cart - View Cart</a>':'<input type="submit" name="add_to_cart" value="Add to Cart" class="add-to-cart">';
+               if (isset($_SESSION["id"])) {
+                    echo (checkIfItemExists($row["id"], $cart)) ? '<a href="cart.php">Added - View Cart</a>':'<input type="submit" name="add_to_cart" value="Add to Cart" class="add-to-cart">';
+               }else{
+                    echo (checkIfItemExists($row["id"], $_SESSION["cart"])) ? '<a href="cart.php">Added - View Cart</a>':'<input type="submit" name="add_to_cart" value="Add to Cart" class="add-to-cart">';
+               }
 
             echo '</form>
             <a href="checkout.php">Buy now</a>
@@ -285,43 +355,43 @@ include("db.php");
             </div>';
             
     }
-}else{
-        function checkIfItemExists($itemId, $cartItems){
-            foreach ($cartItems as $items) {
-                if ($items["id"] == $itemId) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        while ($row=$res->fetch_assoc()) {
+// }else{
+// //         function checkIfItemExists($itemId, $cartItems){
+// //             foreach ($cartItems as $items) {
+// //                 if ($items["id"] == $itemId) {
+// //                     return true;
+// //                 }
+// //             }
+// //             return false;
+// //         }
+// //         while ($row=$res->fetch_assoc()) {
             
-        echo '<div class="items">
-            <a href="product.php?id='.$row["id"].'">
-            <img src="'. $row["image"] . '" alt="" class="item-images">
-            <h3>'. $row["name"] . '</h3>
-            <h4>Price: KSH ' . $row["price"] . '</h4>
-            </a>
-        <div class="actions">
-        <form method="post" id="add-to-cart">
-            <input type="hidden" id="item_id" name="item_id" value="'. $row["id"] . '">
-            <input type="hidden" id="item_image" name="item_image" value="'. $row["image"] . '">
-            <input type="hidden" id="item_name" name="item_name" value="'. $row["name"] . '">
-            <input type="hidden" id="item_price" name="item_price" value="'.$row["price"].'">
-            <div class="qty-cont">
-                <label for="quantity">Qty</label>
-                <input type="number" name="quantity" id="quantity">
-            </div>';
+// //         echo '<div class="items">
+// //             <a href="product.php?id='.$row["id"].'">
+// //             <img src="'. $row["image"] . '" alt="" class="item-images">
+// //             <h3>'. $row["name"] . '</h3>
+// //             <h4>Price: KSH ' . $row["price"] . '</h4>
+// //             </a>
+// //         <div class="actions">
+// //         <form method="post" id="add-to-cart">
+// //             <input type="hidden" id="item_id" name="item_id" value="'. $row["id"] . '">
+// //             <input type="hidden" id="item_image" name="item_image" value="'. $row["image"] . '">
+// //             <input type="hidden" id="item_name" name="item_name" value="'. $row["name"] . '">
+// //             <input type="hidden" id="item_price" name="item_price" value="'.$row["price"].'">
+// //             <div class="qty-cont">
+// //                 <label for="quantity">Qty</label>
+// //                 <input type="number" name="quantity" id="quantity">
+// //             </div>';
         
-           echo (checkIfItemExists($row["id"], $_SESSION["cart"])) ? '<a href="cart.php">Added - View Cart</a>':'<input type="submit" name="add_to_cart" value="Add to Cart" class="add-to-cart">';
+// //            echo (checkIfItemExists($row["id"], $_SESSION["cart"])) ? '<a href="cart.php">Added - View Cart</a>':'<input type="submit" name="add_to_cart" value="Add to Cart" class="add-to-cart">';
 
-        echo '</form>
-        <a href="checkout.php">Buy now</a>
-        </div>
-        </div>';
+// //         echo '</form>
+// //         <a href="checkout.php">Buy now</a>
+// //         </div>
+// //         </div>';
         
-}
-    }
+// // }
+//     }
 } // user ID stored in session
 
             

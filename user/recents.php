@@ -4,6 +4,7 @@ session_start();
 include "db.php";
 
 if (!isset($_SESSION["id"])) {
+    $_SESSION['redirect_to'] = $_SERVER['REQUEST_URI'];
     header("Location: http://localhost:8080/mysite/ec-website/login.php");
 }
 $user_id = $_SESSION["id"];
