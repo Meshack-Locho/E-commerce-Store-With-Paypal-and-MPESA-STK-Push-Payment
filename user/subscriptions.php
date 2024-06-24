@@ -24,6 +24,7 @@ if (!isset($_SESSION["id"])) {
 <body>
 <header>
     <div class="navigation">
+            <i class="fa-solid fa-bars submenu-toggle"></i>
             <a href="http://localhost:8080/mysite/ec-website/index.php" class="logo">
                 <img src="http://localhost:8080/mysite/ec-website/images/hero/hero-4.png" alt="">
                 <h2>Mellow Watches</h2>
@@ -50,14 +51,44 @@ if (!isset($_SESSION["id"])) {
 
             <a href="http://localhost:8080/mysite/ec-website/cart.php" class="cart-toggle cart-icon">
                 <i class="fa-solid fa-cart-shopping"></i>
-                <span id="items-count">0</span>
+                <span id="items-count" class="items-count">0</span>
             </a>
+
+            <i class="fa-solid fa-user menu-toggle"></i>
+        </div>
+
+
+        <div class="mobile-menu">
+            <i class="fa-solid fa-xmark menu-toggle"></i>    
+            <nav>
+            
+                <ul>
+                        <li><a href="http://localhost:8080/mysite/ec-website/index.php">Home</a></li>
+                        <li><a href="http://localhost:8080/mysite/ec-website/checkout.php">Checkout</a></li>
+                        <li><a href="http://localhost:8080/mysite/ec-website/logout.php">Logout</a></li>
+                        <li>
+                            <a href="http://localhost:8080/mysite/ec-website/cart.php" class="cart-toggle cart-icon">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <span id="items-count" class="items-count">0</span>
+                            </a>
+                        </li>
+                </ul>
+            </nav>
+
+            <div class="search-panel">
+                <form action="http://localhost:8080/mysite/ec-website/search.php" method="get">
+                    <input type="search" name="search" id="search" placeholder="Search for watches">
+                    <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+            </div>
+
         </div>
     </header>
 
     <main>
         <section class="acc-info">
             <div class="options">
+                <span class="submenu-toggle submenu-close"><i class="fa-solid fa-arrow-left"></i></span>
                 <a href="dashboard.php"><i class="fa-solid fa-user"></i> My Account</a>
                 <a href="orders.php"><i class="fa-solid fa-bag-shopping"></i> Orders</a>
                 <a href="inbox.php">
@@ -72,16 +103,41 @@ if (!isset($_SESSION["id"])) {
             <div class="subscriptions">
                 <h3>Subscriptions</h3>
                 <div class="subscribed">
-                    <div class="no-subscriptions">
-                        <i class="fa-solid fa-newspaper"></i> 
-                        <h4>You have no subscriptions at the moment</h4>
-                        <p>All your subscriptions will appear here. You can unsubscribe at any moment</p>
-                        <form action="newsletter.php" method="post">
-                            <input type="email" name="email" id="email" value="<?= $_SESSION["email"]?> " required>
-                            <input type="submit" value="Subscribe">
-                        </form>
-                        <a href="http://localhost:8080/mysite/ec-website/index.php">More Subscriptions</a>
+                    <?php
+                    $user_id = $_SESSION["id"];
+                    $stmt = $conn2->prepare("SELECT * FROM subscriptions WHERE user_id=? ORDER BY time DESC");
+                    $stmt->bind_param("i", $user_id);
+                    $stmt->execute();
+                    $results = $stmt->get_result();
+
+                    if ($results->num_rows>0) {
+                        while ($row=$results->fetch_assoc()) {
+                            $time = new DateTime($row["time"]);
+                            $formattedTime =  $time->format('d / Y H:i A');
+                            $time = DateTime::createFromFormat('d / Y H:i A', $formattedTime);
+                            echo "<div class='subscription'>
+                                    <h3>Subscription</h3>
+                                    <div>
+                                        <h4>".htmlspecialchars($row["subscription_type"])."</h4>
+                                        <h5>".htmlspecialchars($time->format("F") . ", " . $formattedTime)."</h5>
+                                    </div>
+                                  </div>";
+                        }
+                    }else{?>
+                        <div class="no-subscriptions">
+                            <i class="fa-solid fa-newspaper"></i> 
+                            <h4>You have no subscriptions at the moment</h4>
+                            <p>All your subscriptions will appear here. You can unsubscribe at any moment</p>
+                            <form action="newsletter.php" method="post">
+                                <input type="email" name="email" id="email" value="<?= $_SESSION["email"]?> " required>
+                                <input type="hidden" name="subscription_type" value="Newsletter Subscription ">
+                                <input type="submit" value="Subscribe">
+                            </form>
+                            <a href="http://localhost:8080/mysite/ec-website/index.php">More Subscriptions</a>
                     </div>
+                    <?php }
+
+                    ?>
                 </div>
             </div>
         </section>

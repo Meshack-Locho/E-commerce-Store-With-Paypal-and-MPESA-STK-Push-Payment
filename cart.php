@@ -8,7 +8,6 @@ if (!isset($_SESSION["id"])) {
         echo $_SESSION["cart"][$_GET['name']];
     }
     
-    
     $cartCount = count($_SESSION["cart"]);
     $total = $_SESSION["total"];
 }else{

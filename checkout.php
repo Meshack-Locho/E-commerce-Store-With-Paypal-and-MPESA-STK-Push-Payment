@@ -383,9 +383,23 @@ if (!isset($_SESSION['id'])) {
         guestCheckout.addEventListener("click", ()=>{
             checkoutOptions.classList.add("inactive")
         })
+        
+        let itemsOnCartText = document.getElementById("items-count")
+
+    function updateItemCount() {
+        fetch("s.php")
+            .then(response=>response.text())
+            .then(data => {
+                    itemsOnCartText.textContent = data
+                
+        })
+    }
+
+updateItemCount()
+
+
     </script>
 
-    <script src="js/user.js"></script>
     
 </body>
 </html>

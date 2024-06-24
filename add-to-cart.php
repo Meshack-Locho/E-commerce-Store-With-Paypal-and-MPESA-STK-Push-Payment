@@ -7,9 +7,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$item_name = $_POST['item_name'];
-$item_price = $_POST['item_price'];
-$item_image = $_POST['item_image'];
+
 
 if (!isset($_SESSION["id"])) {
 
@@ -17,25 +15,34 @@ if (!isset($_SESSION["id"])) {
         $_SESSION['cart'] = array();
     }
 
-    function add_to_cart($item_id, $item_image, $item_name, $item_price) {
+    function add_to_cart($item_id, $item_image, $item_name, $item_price, $quantity) {
         $_SESSION['cart'][] = array(
             'id' => $item_id,
             'image' => $item_image,
             'name' => $item_name,
-            'price' => $item_price
+            'price' => $item_price,
+            'quantity' => $quantity
         );
     }
     
     
     // Function to add item to cart
     
-    if (isset($_POST['add_to_cart'])) {
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $item_id = $_POST['item_id'];
         $item_name = $_POST['item_name'];
         $item_price = $_POST['item_price'];
         $item_image = $_POST['item_image'];
-        add_to_cart($item_id, $item_image, $item_name, $item_price);
+        $quantity = $_POST["quantity"];
+        if ($quantity) {
+            $item_price = $item_price * $quantity;
+        }else{
+            $item_price = $item_price;
+        }
+        add_to_cart($item_id, $item_image, $item_name, $item_price, $quantity);
     }
+
+    
     
     $cartCount = count($_SESSION["cart"]);
     
@@ -51,6 +58,12 @@ if (!isset($_SESSION["id"])) {
     $total = calcTotal();
     
     $_SESSION["total"] = $total;
+
+    if ($quantity>0) {
+        echo "$quantity of $item_name has been added to your cart";
+    }else{
+        echo "1 of $item_name has been added to your cart";
+    }
 }else{
 
    

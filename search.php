@@ -63,18 +63,32 @@ if (isset($_POST["add_to_cart"])) {
 
             <nav>
                 <ul>
-                    <li><a href="">Home</a></li>
-                    <li><a href="">Watches</a></li>
+                    <li><a href="index.php">Home</a></li>
+                    <li><a href="index.php">Watches</a></li>
                     <li><a href="">Contact</a></li>
-                    <li><a href="" id="login-link">Login</a></li>
-                    <li><a href="" id="signup-link">Sign Up</a></li>
+                    <?php
+                    
+                        if (isset($_SESSION["id"])) { ?>
+                            <li id="user-name"><?= $_SESSION["fname"]?> <i class="fa-solid fa-angle-down"></i>
+                            
+                            <div class="user-options">
+                                <a href="user/dashboard.php">Dashboard</a>
+                                <a href="logout.php">Logout</a>
+                            </div>
+                            </li>
+                       <?php }else{ ?>
+                            <li><a href="login.php" id="login-link">Login</a></li>
+                            <li><a href="signup.php" id="signup-link">Sign Up</a></li>
+                       <?php }
+                    
+                    ?>
                 </ul>
             </nav>
 
             <a href="cart.php" class="cart-toggle cart-icon">
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span id="items-count">0</span>
-        </a>
+            </a>
         </div>
 
         <div class="header-text-big-search" style="justify-content: space-evenly;">
@@ -85,15 +99,15 @@ if (isset($_POST["add_to_cart"])) {
             </div>
         </div>
 
+    </div>
 
-        <div class="search-panel">
+    <div class="search-panel">
             <h3>Search for watches</h3>
             <form action="search.php" method="get">
                 <input type="search" name="search" id="search">
                 <input type="submit" value="Search">
             </form>
         </div>
-    </div>
     <div class="container" style="flex-direction: column;">
     <h2 style="text-align: center;">Search Results for <?php echo "'$search'"?></h2>
         <?php
@@ -113,21 +127,11 @@ if (isset($_POST["add_to_cart"])) {
                     while ($row=$result->fetch_assoc()) {
                         
                                 echo '<div class="items">
-                                <a href="">
+                                <a href="product.php?id='.$row["id"].'">
                                 <img src="'. $row["image"] . '" alt="" class="item-images">
                                 <h3>'. $row["name"] . '</h3>
                                 <h4>Price: KSH ' . $row["price"] . '</h4>
                                 </a>
-                                <div class="actions">
-                                    <form method="post" action="add-to-cart.php" id="add-to-cart">
-                                        <input type="hidden" name="item_id" value="'. $row["id"] . '">
-                                        <input type="hidden" name="item_image" value="'. $row["image"] . '">
-                                        <input type="hidden" name="item_name" value="'. $row["name"] . '">
-                                        <input type="hidden" name="item_price" value="'. $row["price"] . '">
-                                        <input type="submit" name="add_to_cart" value="Add to Cart">
-                                    </form>
-                                    <a href="checkout.php">Buy now</a>
-                                </div>
                                 </div>';
 
                         }

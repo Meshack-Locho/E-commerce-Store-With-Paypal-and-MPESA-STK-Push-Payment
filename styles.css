@@ -69,6 +69,7 @@ header{
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
+    color: rgb(162, 163, 251);
 }
 .user-options{
     position: absolute;
@@ -226,16 +227,15 @@ main{
 
 }
 .container{
-    width: 100%;
+    width: 90%;
     height: auto;
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    padding: 10px;
+    padding: 20px;
 }
 
 /*SEARCH RESULTS CON*/
-
 
 .search-res{
     width: 100%;
@@ -339,6 +339,10 @@ main{
     transform: translateY(0);
     opacity: 1;
     z-index: 3;
+}
+#cart-response a{
+    color: rgb(0, 0, 0);
+    font-size: 20px;
 }
 #close-dialog{
     position: absolute;
@@ -648,5 +652,8 @@ footer{
     }
     #cart-response{
         left: 5%;
+    }
+    .container{
+        padding: 10px;
     }
 }

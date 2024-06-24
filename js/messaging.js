@@ -57,8 +57,8 @@ function markAsRead(messageId, messageColor) {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            alert(`Message ${messageId} marked as read.`);
-            // Optionally, update the UI to reflect the read status
+            alert(`Message marked as read.`);
+            //updating the UI to reflect the read status
             document.querySelector(`[data-message-id='${messageId}']`).classList.add('read');
         } else {
             alert('Error updating message status:', data.message);
@@ -67,6 +67,21 @@ function markAsRead(messageId, messageColor) {
     .catch(error => alert('Message Update Request failed', error));
 }
 
+
+fetch('unread-messages.php')// LINK CARRYING THE DATA, I.E THE UNREAD MESSAGES
+        .then(response => response.json()) // GIVEN RESPONSE CONVERTED TO JSON
+        .then(data => {
+            const unreadCount = data //THE DATA
+            const notificationDot = document.querySelector('.notification-dot');
+
+            $("#unread-messages").text(`(${data}) Unread`)
+            if (unreadCount > 0) {
+                notificationDot.classList.remove('hide');
+            } else {
+                notificationDot.classList.add('hide');
+            }
+        })
+        .catch(error => alert('Error fetching unread messages:', error));
 
 const mobileMenu = document.querySelector(".mobile-menu")
 let menuToggle = document.querySelectorAll(".menu-toggle")

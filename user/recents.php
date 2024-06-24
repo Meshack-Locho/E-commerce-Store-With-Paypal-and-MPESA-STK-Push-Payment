@@ -38,6 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
 <body>
 <header>
     <div class="navigation">
+    <i class="fa-solid fa-bars submenu-toggle"></i>
             <a href="http://localhost:8080/mysite/ec-website/index.php" class="logo">
                 <img src="http://localhost:8080/mysite/ec-website/images/hero/hero-4.png" alt="">
                 <h2>Mellow Watches</h2>
@@ -66,12 +67,44 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span id="items-count">0</span>
             </a>
+
+            <i class="fa-solid fa-user menu-toggle"></i>
         </div>
+
+
+
+        <div class="mobile-menu">
+            <i class="fa-solid fa-xmark menu-toggle"></i>    
+            <nav>
+            
+                <ul>
+                        <li><a href="http://localhost:8080/mysite/ec-website/index.php">Home</a></li>
+                        <li><a href="http://localhost:8080/mysite/ec-website/checkout.php">Checkout</a></li>
+                        <li><a href="http://localhost:8080/mysite/ec-website/logout.php">Logout</a></li>
+                        <li>
+                            <a href="http://localhost:8080/mysite/ec-website/cart.php" class="cart-toggle cart-icon">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <span id="items-count" class="items-count">0</span>
+                            </a>
+                        </li>
+                </ul>
+            </nav>
+
+            <div class="search-panel">
+                <form action="http://localhost:8080/mysite/ec-website/search.php" method="get">
+                    <input type="search" name="search" id="search" placeholder="Search for watches">
+                    <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+            </div>
+
+        </div>
+
     </header>
 
     <main>
         <section class="acc-info">
             <div class="options">
+                <span class="submenu-toggle submenu-close"><i class="fa-solid fa-arrow-left"></i></span>
                 <a href="dashboard.php"><i class="fa-solid fa-user"></i> My Account</a>
                 <a href="orders.php"><i class="fa-solid fa-bag-shopping"></i> Orders</a>
                 <a href="inbox.php">

@@ -303,17 +303,17 @@ include("db.php");
             <h4>Price: KSH ' . $row["price"] . '</h4>
             </a>
         <div class="actions">
-        <form method="post" action="" id="add-to-cart" onsubmit="preventRel()">
-            <input type="hidden" name="item_id" value="'. $row["id"] . '">
-            <input type="hidden" name="item_image" value="'. $row["image"] . '">
-            <input type="hidden" name="item_name" value="'. $row["name"] . '">
-            <input type="hidden" name="item_price" value="'.$row["price"].'">
+        <form method="post" id="add-to-cart">
+            <input type="hidden" id="item_id" name="item_id" value="'. $row["id"] . '">
+            <input type="hidden" id="item_image" name="item_image" value="'. $row["image"] . '">
+            <input type="hidden" id="item_name" name="item_name" value="'. $row["name"] . '">
+            <input type="hidden" id="item_price" name="item_price" value="'.$row["price"].'">
             <div class="qty-cont">
                 <label for="quantity">Qty</label>
                 <input type="number" name="quantity" id="quantity">
             </div>';
         
-           echo (checkIfItemExists($row["id"], $_SESSION["cart"])) ? '<a href="cart.php">Added - View Cart</a>':'<input type="submit" name="add_to_cart" value="Add to Cart">';
+           echo (checkIfItemExists($row["id"], $_SESSION["cart"])) ? '<a href="cart.php">Added - View Cart</a>':'<input type="submit" name="add_to_cart" value="Add to Cart" class="add-to-cart">';
 
         echo '</form>
         <a href="checkout.php">Buy now</a>
@@ -334,6 +334,7 @@ include("db.php");
     <div id="cart-response" class="cart-response">
         <i class="fa-solid fa-circle-xmark" id="close-dialog"></i>
         <h3 class="added-item-name"></h3>
+        <a href="cart.php">View Cart</a>
     </div>
 
     <div id="ajax-loader">

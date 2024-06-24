@@ -4,6 +4,7 @@ session_start();
 include "db.php";
 
 if (!isset($_SESSION["id"])) {
+    $_SESSION['redirect_to'] = $_SERVER['REQUEST_URI'];
     header("Location: http://localhost:8080/mysite/ec-website/login.php");
 }
 
@@ -25,14 +26,20 @@ if (!isset($_SESSION["id"])) {
 <body>
 
     <header>
+
+<!--Navigation-->
+
+
     <div class="navigation">
             <i class="fa-solid fa-bars submenu-toggle"></i>
             <a href="" class="logo">
                 <img src="http://localhost:8080/mysite/ec-website/images/hero/hero-4.png" alt="">
                 <h2>Mellow Watches</h2>
             </a>
+            <!--SEARCH-->
+
             <div class="search-panel">
-                <form action="search.php" method="get">
+                <form action="http://localhost:8080/mysite/ec-website/search.php" method="get">
                     <input type="search" name="search" id="search" placeholder="Search for watches">
                     <input type="submit" value="Search">
                 </form>
@@ -40,6 +47,9 @@ if (!isset($_SESSION["id"])) {
 
             <nav>
                 <ul>
+                    <!--DISPLAYING USER NAME-->
+
+
                     <li id="user-name">Hello <?= $_SESSION["fname"]?> <i class="fa-solid fa-angle-down"></i>
                             
                     <div class="user-options">
@@ -51,13 +61,17 @@ if (!isset($_SESSION["id"])) {
                 </ul>
             </nav>
 
+            <!--CART ICON DISPLAYING NUMBER OF ITEMS IN THE CART-->
             <a href="http://localhost:8080/mysite/ec-website/cart.php" class="cart-toggle cart-icon">
                 <i class="fa-solid fa-cart-shopping"></i>
-                <span id="items-count">0</span>
+                <span id="items-count" class="items-count">0</span>
             </a>
 
-            <i class="fa-solid fa-circle-xmark menu-toggle"></i>
+            <i class="fa-solid fa-user menu-toggle"></i>
         </div>
+
+        <!--NAVIGATION FOR MOBILE-->
+
 
         <div class="mobile-menu">
             <i class="fa-solid fa-xmark menu-toggle"></i>    
@@ -87,9 +101,18 @@ if (!isset($_SESSION["id"])) {
     </header>
 
     <main>
+
+    <!--ACCOUNT INFO-->
         <section class="acc-info">
+
+        <!--USER OPTIONS AND LINKS TO OTHER PAGES-->
             <div class="options">
-                <span class="submenu-toggle submenu-close">X</span>
+                <!--SUB MENU TOGGLE ON SMALL SCREEN-->
+
+                <span class="submenu-toggle submenu-close"><i class="fa-solid fa-arrow-left"></i></span>
+
+                <!--SUBMENU-->
+
                 <a href="dashboard.php" class="selected-page"><i class="fa-solid fa-user"></i> My Account</a>
                 <a href="orders.php"><i class="fa-solid fa-bag-shopping"></i> Orders</a>
                 <a href="inbox.php">
@@ -100,6 +123,8 @@ if (!isset($_SESSION["id"])) {
                 <a href="subscriptions.php"><i class="fa-solid fa-newspaper"></i> Subscriptions</a>
                 <a href="http://localhost:8080/mysite/ec-website/logout.php" id="logout-link"><i class="fa-solid fa-person-through-window"></i> Logout</a>
             </div>
+
+            <!--USER DETAILS FROM DB-->
             <div class="details">
                 <h2>Account Overview</h2>
                 <div class="acc-details">
@@ -120,6 +145,8 @@ if (!isset($_SESSION["id"])) {
                 </div>
             </div>
         </section>
+
+        <!--RECOMMENDATION, JUST RANDOM FOR THE MOMENT. FROM DB-->
 
         <section class="recommendations">
             <h3>Recommended for you</h3>

@@ -38,8 +38,10 @@ fetch('unread-messages.php')// LINK CARRYING THE DATA, I.E THE UNREAD MESSAGES
             const unreadCount = data //THE DATA
             const notificationDot = document.querySelector('.notification-dot');
 
+            console.log(data)
             if (unreadCount > 0) {
                 notificationDot.classList.remove('hide');
+                console.log("data: ", data)
             } else {
                 notificationDot.classList.add('hide');
             }

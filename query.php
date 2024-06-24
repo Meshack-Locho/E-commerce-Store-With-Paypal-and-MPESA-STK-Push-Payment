@@ -82,78 +82,74 @@ $data_to = json_decode($curl_res);
 // var_dump($data_to);
 // var_dump($data_to->errorCode);
 
-if ($data_to->errorCode == "500.001.1001") {
-    echo "<div class='checkout-status'><h2>The transaction is being processed<h2></div>";
-}else{
-    if (isset($data_to->ResultCode)) {
-        $resultCode = $data_to->ResultCode;
-        if($resultCode === "1037"){
-            $orderStatus = "Unsuccessful";
-            echo "<div class='checkout-status'>
-                    <h3>Dear Customer, There was a Timeout in completing transaction. Please try agiain after a few minutes.</h3>
-                    <a href='checkout.php'>Return to Checkout <i class='fa-solid fa-credit-card'></i></a>
-                  </div>";
-        }elseif($resultCode === "1032"){
-            $orderStatus = "Unsuccessful";
-            echo "<div class='checkout-status'>
-                    <h3>Dear Customer, You Cancelled the Transaction.</h3>
-                    <a href='index.php'>Return to Shop <i class='fa-solid fa-bag-shopping'></i></a>
-                  </div>";
-        }elseif($resultCode === "1"){
-            $orderStatus = "Unsuccessful";
-            echo "<div class='checkout-status'>
-                    <h3>Dear Customer, You Balance is insufficient for the transaction.</h3>  
-                    <a href='cart.php'>Return to Cart <i class='fa-solid fa-cart-shopping'></i></a>
-                  </div>";
-        }elseif($resultCode === "0"){
-            
-            $headers = "From: meshacklocho@meshacklocho.co.ke\r\n";
-            $headers .= "MIME-Version: 1.0\r\n";
-            $headers .= "Content-type: text/html; charset=iso-8859-1\r\n"; 
-          
-            $message = "
-                <h2>New Order:</h2> <br><br>
-                Name: $firstName $secondName <br>
-                Email: $email <br>
-                Type of delivery: $typeofDelivery <br>
-                Payment Method: $paymentType <br>
-                Address: $address <br>
-                City: $city <br>
-                Postal-code: $postal_code <br>
-                Phone Number: $user_phone <br><br>
-                Total: $total <br><br>
-                Cart items: <br><br> \n";
-            if (!isset($_SESSION["id"])) {
-                    foreach ($cartItems as $item){
-                    $message .= "Name: " . $item["name"] . "<br>Price: KSH" . $item["price"] . "<br><br>" . "\n";
-                }
-            }else{
-                foreach ($dec as $item){
-                    $message .= "Name: " . $item->name . "<br>Price: KSH" . $item->price . "<br><br>" . "\n";
-                }
+if (isset($data_to->ResultCode)) {
+    $resultCode = $data_to->ResultCode;
+    if($resultCode === "1037"){
+        $orderStatus = "Unsuccessful";
+        echo "<div class='checkout-status'>
+                <h3>Dear Customer, There was a Timeout in completing transaction. Please try agiain after a few minutes.</h3>
+                <a href='checkout.php'>Return to Checkout <i class='fa-solid fa-credit-card'></i></a>
+              </div>";
+    }elseif($resultCode === "1032"){
+        $orderStatus = "Unsuccessful";
+        echo "<div class='checkout-status'>
+                <h3>Dear Customer, You Cancelled the Transaction.</h3>
+                <a href='index.php'>Return to Shop <i class='fa-solid fa-bag-shopping'></i></a>
+              </div>";
+    }elseif($resultCode === "1"){
+        $orderStatus = "Unsuccessful";
+        echo "<div class='checkout-status'>
+                <h3>Dear Customer, You Balance is insufficient for the transaction.</h3>  
+                <a href='cart.php'>Return to Cart <i class='fa-solid fa-cart-shopping'></i></a>
+              </div>";
+    }elseif($resultCode === "0"){
+        
+        $headers = "From: meshacklocho@meshacklocho.co.ke\r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= "Content-type: text/html; charset=iso-8859-1\r\n"; 
+      
+        $message = "
+            <h2>New Order:</h2> <br><br>
+            Name: $firstName $secondName <br>
+            Email: $email <br>
+            Type of delivery: $typeofDelivery <br>
+            Payment Method: $paymentType <br>
+            Address: $address <br>
+            City: $city <br>
+            Postal-code: $postal_code <br>
+            Phone Number: $user_phone <br><br>
+            Total: $total <br><br>
+            Cart items: <br><br> \n";
+        if (!isset($_SESSION["id"])) {
+                foreach ($cartItems as $item){
+                $message .= "Name: " . $item["name"] . "<br>Price: KSH" . $item["price"] . "<br><br>" . "\n";
             }
-            
-            mail("meshacklocho5@gmail.com", "ORDERED ITEMS", $message, $headers);
-            echo "<div class='checkout-status'>
-                    <h3>Dear Customer, the Transaction was successful.</h3>
-                    <a href='index.php'>Return to Shop <i class='fa-solid fa-bag-shopping'></i></a>
-                  </div>";
-            
-            $orderStatus = "Successful";
-            
+        }else{
+            foreach ($dec as $item){
+                $message .= "Name: " . $item->name . "<br>Price: KSH" . $item->price . "<br><br>" . "\n";
+            }
         }
-            $allItems = get_object_vars($dec);
-            $numberofItems = count($allItems);
-                  
-            if (isset($_SESSION["id"])) {
-                    $stmt = $conn2->prepare("INSERT INTO user_orders (user_id, delivery_type, total, status, payment_method, no_of_items) VALUES (?,?,?,?,?,?)");
-                    $stmt->bind_param('isssss', $user_id, $typeofDelivery, $total, $orderStatus, $paymentType, $numberofItems);
-                    $stmt->execute();
-            }
-            
-    
-            
+        
+        mail("meshacklocho5@gmail.com", "ORDERED ITEMS", $message, $headers);
+        echo "<div class='checkout-status'>
+                <h3>Dear Customer, the Transaction was successful.</h3>
+                <a href='index.php'>Return to Shop <i class='fa-solid fa-bag-shopping'></i></a>
+              </div>";
+        
+        $orderStatus = "Successful";
+        
     }
+              
+        if (isset($_SESSION["id"])) {
+                $allItems = get_object_vars($dec);
+                $numberofItems = count($allItems);
+                $stmt = $conn2->prepare("INSERT INTO user_orders (user_id, delivery_type, total, status, payment_method, no_of_items) VALUES (?,?,?,?,?,?)");
+                $stmt->bind_param('isssss', $user_id, $typeofDelivery, $total, $orderStatus, $paymentType, $numberofItems);
+                $stmt->execute();
+        }
+        
+
+        
 }
 curl_close($curl);
 

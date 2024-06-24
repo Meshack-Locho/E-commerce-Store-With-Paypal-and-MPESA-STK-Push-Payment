@@ -3,7 +3,7 @@ let itemsOnCart = 0
 let itemsOnCartText = document.getElementById("items-count")
 let addToCartForm = document.getElementById("add-to-cart")
 let removingItemForm = document.getElementById("remove-items-form")
-
+let addetItemData = document.querySelector(".added-item-name")
 function updateItemCount() {
     fetch("s.php")
      .then(response=>response.text())
@@ -20,25 +20,6 @@ updateItemCount()
 function preventRel(event) {
     updateItemCount()
 }
-
-// document.addEventListener("DOMContentLoaded", ()=>{
-//     addToCartForm.addEventListener("submit", function (event){
-//         event.preventDefault()
-    
-//         fetch('add-to-cart.php', {
-//             method: 'POST',
-//             body: addToCartForm
-//         })
-//         .then(response => response.text())
-//         .then(data => {
-//             console.log(data)
-//             document.getElementById('cart-response').innerHTML = data; // Display the server response
-//         })
-//         .catch(error => console.error('Error:', error));
-    
-//         updateItemCount()
-//     })
-// })
 
 $(document).ready(function() {
     $("#ajax-loader").hide()  
@@ -78,6 +59,7 @@ $(document).ready(function() {
                     console.log(response)
                     $('.added-item-name').text(response)
                     $('#cart-response').addClass("active"); // Displaying the server response
+                    console.log(item_id, item_image, item_name, item_price)
                 },
                 complete: function () {
                     $("#ajax-loader").hide()  
@@ -92,6 +74,9 @@ $(document).ready(function() {
     
 });
 
+$("#close-dialog").on("click", function () {
+    $('#cart-response').removeClass("active")
+})
 
 
 

@@ -44,7 +44,7 @@ if (!isset($_SESSION["id"])) {
                 <h2>Mellow Watches</h2>
             </a>
             <div class="search-panel">
-                <form action="search.php" method="get">
+                <form action="http://localhost:8080/mysite/ec-website/search.php" method="get">
                     <input type="search" name="search" id="search" placeholder="Search for watches">
                     <input type="submit" value="Search">
                 </form>
@@ -67,7 +67,7 @@ if (!isset($_SESSION["id"])) {
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span id="items-count" class="items-count">0</span>
             </a>
-            <i class="fa-solid fa-circle-xmark menu-toggle"></i>
+            <i class="fa-solid fa-user menu-toggle"></i>
         </div>
 
         <div class="mobile-menu">
@@ -100,7 +100,7 @@ if (!isset($_SESSION["id"])) {
     <main>
         <section class="acc-info">
             <div class="options">
-                <span class="submenu-toggle submenu-close">X</span>
+                <span class="submenu-toggle submenu-close"><i class="fa-solid fa-arrow-left"></i></span>
                 <a href="dashboard.php"><i class="fa-solid fa-user"></i> My Account</a>
                 <a href="orders.php"><i class="fa-solid fa-bag-shopping"></i> Orders</a>
                 <a href="inbox.php" class="selected-page">
@@ -112,7 +112,7 @@ if (!isset($_SESSION["id"])) {
             </div>
 
             <div class="messages">
-                <h3><span>Inbox </span> <button id="clear-all">Clear all</button></h3>
+                <h3><span>Inbox </span> <span id="unread-messages"></span> <button id="clear-all">Clear all</button></h3>
                 <div class="inbox" id="inbox">
                     <?php
                     
