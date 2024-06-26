@@ -108,7 +108,8 @@ if (isset($_POST["add_to_cart"])) {
                 <input type="submit" value="Search">
             </form>
         </div>
-    <div class="container" style="flex-direction: column;">
+
+    <div class="search-results-wrapper" style="flex-direction: column;">
     <h2 style="text-align: center;">Search Results for <?php echo "'$search'"?></h2>
         <?php
             if ($_SERVER["REQUEST_METHOD"] === "GET") {
@@ -126,11 +127,13 @@ if (isset($_POST["add_to_cart"])) {
             
                     while ($row=$result->fetch_assoc()) {
                         
-                                echo '<div class="items">
-                                <a href="product.php?id='.$row["id"].'">
-                                <img src="'. $row["image"] . '" alt="" class="item-images">
-                                <h3>'. $row["name"] . '</h3>
-                                <h4>Price: KSH ' . $row["price"] . '</h4>
+                                echo '<div class="search-items">
+                                <a href="product.php?id='.$row["id"].'" class="item-links">
+                                    <img src="'. $row["image"] . '" alt="" class="item-images">
+                                    <div>
+                                        <h3>'. $row["name"] . '</h3>
+                                        <h4>Price: KSH ' . $row["price"] . '</h4>
+                                    </div>
                                 </a>
                                 </div>';
 

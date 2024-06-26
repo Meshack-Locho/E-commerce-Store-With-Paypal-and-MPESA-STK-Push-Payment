@@ -4,6 +4,13 @@ session_start();
 
 include("db.php");
 
+
+if (!isset($_SESSION["id"])) {
+    if (!isset($_SESSION['cart'])) {
+         $_SESSION['cart'] = array();
+         $_SESSION["total"] = 0;
+    }
+}
 // Check if cart array exists in session, if not, create it
     
 
@@ -173,8 +180,6 @@ include("db.php");
             <nav>
                 <ul>
                     <li><a href="">Home</a></li>
-                    <li><a href="">Watches</a></li>
-                    <li><a href="">Contact</a></li>
                     <?php
                     
                         if (isset($_SESSION["id"])) { ?>
@@ -207,7 +212,6 @@ include("db.php");
         <nav>
                 <ul>
                     <li><a href="index.php">Home</a></li>
-                    <li><a href="">Contact</a></li>
                     
                     <?php
                     
@@ -281,8 +285,8 @@ include("db.php");
     <div class="container">
         <?php
 
-            $sort_by = isset($_GET['sort_by']) ? $_GET['sort_by'] : 'price';
-            $order = isset($_GET['order']) ? $_GET['order'] : 'ASC';
+            $sort_by = isset($_GET['sort_by']) ? $_GET['sort_by'] : 'id';
+            $order = isset($_GET['order']) ? $_GET['order'] : 'DESC';
 
 // Validate sort_by and order values
             $allowed_sort_by = ['price', 'name'];
@@ -350,7 +354,6 @@ include("db.php");
                }
 
             echo '</form>
-            <a href="checkout.php">Buy now</a>
             </div>
             </div>';
             

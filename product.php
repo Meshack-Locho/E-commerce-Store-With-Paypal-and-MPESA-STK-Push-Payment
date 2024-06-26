@@ -52,7 +52,7 @@ if (isset($_SESSION["id"])) {
                             <li id="user-name"><?= $_SESSION["fname"]?> <i class="fa-solid fa-angle-down"></i>
                             
                             <div class="user-options">
-                                <a href="dashboard.php">Dashboard</a>
+                                <a href="user/dashboard.php">Dashboard</a>
                                 <a href="logout.php">Logout</a>
                             </div>
                             </li>
@@ -101,13 +101,17 @@ if (isset($_SESSION["id"])) {
                               <div class='share-links'>
                               <a href=''><i class='fa-brands fa-facebook'></i></a>
                               <a href=''><i class='fa-brands fa-x-twitter'></i></a>
+                              <div class='qty-cont'>
+                                <label for='quantity'>Qty</label>
+                                <input type='number' name='quantity' id='quantity'>
                               </div>
-                                <form action='add-to-cart.php' method='post'>
-                                    <input type='hidden' name='item_id' value='". $row["id"] . "'>
-                                        <input type='hidden' name='item_image' value='". $row["image"] . "'>
-                                        <input type='hidden' name='item_name' value='". $row["name"] . "'>
-                                        <input type='hidden' name='item_price' value='". $row["price"] . "'>
-                                        <input type='submit' name='add_to_cart' value='Add to Cart' id='add-to-cart-btn'>
+                              </div>
+                                <form method='post' id='add-to-cart'>
+                                    <input type='hidden' id='item_id' name='item_id' value='". $row["id"] . "'>
+                                        <input type='hidden' id='item_image' name='item_image' value='". $row["image"] . "'>
+                                        <input type='hidden' id='item_name' name='item_name' value='". $row["name"] . "'>
+                                        <input type='hidden' id='item_price' name='item_price' value='". $row["price"] . "'>
+                                        <input type='submit' name='add_to_cart' value='Add to Cart' id='add-to-cart-btn' class='add-to-cart'>
                                 </form>
                               </div>";
                               
@@ -129,8 +133,7 @@ if (isset($_SESSION["id"])) {
                     }
                     
                 }
-                $conn->close();
-                $conn2->close();
+                
                 }
                 
                 
@@ -138,6 +141,7 @@ if (isset($_SESSION["id"])) {
             </div>
 
             <div class="gallery-info">
+                <h4>Other Images Example</h4>
             <div class="image-gallery">
                 <img src="images/gold-watch.jpg" alt="">
                 <img src="images/round-silver-watch.jpg" alt="">
@@ -147,31 +151,47 @@ if (isset($_SESSION["id"])) {
 
             <div class="info">
                 <h3>Order Now</h3>
-                <a href="">Buy Now</a>
-                <a href=""><i class="fa-solid fa-phone"></i> Call Now for delivery</a>
+                <a href="tel:+254712345678"><i class="fa-solid fa-phone"></i> Call Now for delivery</a>
 
                 <h3>Types of Delivery</h3>
                 <div class="delivery-types">
                     <div class="type">
+                        <div class="det-head">
                         <div>
                         <i class="fa-solid fa-hands-holding"></i>
                         <h5>Door Delivery</h5>
                         </div>
-                        <button>Details</button>
+                        <button class="details-btn">Details</button>
+                        </div>
+                        <p class="details">
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem molestias fuga magnam molestiae, hic animi alias ea beatae, explicabo aut quo praesentium! Ea error architecto dicta, numquam voluptate excepturi distinctio.
+                        </p>
                     </div>
                     <div class="type">
-                        <div>
-                        <i class="fa-solid fa-truck"></i>
-                        <h5>Pick up Delivery</h5>
+                        <div class="det-head">
+                            <div>
+                                <i class="fa-solid fa-truck"></i>
+                                <h5>Pick up Delivery</h5>
+                            </div>
+                            <button class="details-btn">Details</button>
                         </div>
-                        <button>Details</button>
+
+                        <p class="details">
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem molestias fuga magnam molestiae, hic animi alias ea beatae, explicabo aut quo praesentium! Ea error architecto dicta, numquam voluptate excepturi distinctio.
+                        </p>
                     </div>
                     <div class="type">
-                        <div>
-                        <i class="fa-solid fa-moon"></i>
-                        <h5>Overnight Delivery</h5>
+                        <div class="det-head">
+                            <div>
+                                <i class="fa-solid fa-moon"></i>
+                                <h5>Overnight Delivery</h5>
+                            </div>
+                            <button class="details-btn">Details</button>
                         </div>
-                        <button>Details</button>
+
+                        <p class="details">
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem molestias fuga magnam molestiae, hic animi alias ea beatae, explicabo aut quo praesentium! Ea error architecto dicta, numquam voluptate excepturi distinctio.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -205,55 +225,38 @@ if (isset($_SESSION["id"])) {
         <h2>You may also Like</h2>
 
         <div class="other-items">
-            <div>
-                <a href="">
-                    <img src="images/gold-watch.jpg" alt="">
-                    <h5>Watch Four</h5>
-                    <h5>Price KSH 2, 345</h5>
-                </a>    
+            <?php
+            $stmts=$conn->prepare("SELECT * FROM all_products ORDER BY id LIMIT 4");
+            $stmts->execute();
+            $products = $stmts->get_result();
+            while ($row = $products->fetch_assoc()) {
+                echo '
+                <div>
+                <a href="product.php?id='.$row["id"].'">
+                    <img src="'. $row["image"] . '" alt="" class="item-images">
+                    <h3>'. $row["name"] . '</h3>
+                    <h4>Price: KSH ' . $row["price"] . '</h4>
+                    </a>
+                </div>';
+            }
 
-                <button>Add to Cart</button>
-            </div>
-
-            <div>
-                <a href="">
-                    <img src="images/watch-5.jpg" alt="">
-                    <h5>Watch Five</h5>
-                    <h5>Price KSH 1, 299</h5>
-                </a>    
-
-                <button>Add to Cart</button>
-            </div>
-
-            <div>
-                <a href="">
-                    <img src="images/round-silver-watch.jpg" alt="">
-                    <h5>Watch Type One</h5>
-                    <h5>Price KSH 1, 789</h5>
-                </a>    
-
-                <button>Add to Cart</button>
-            </div>
-            <div>
-                <a href="">
-                    <img src="images/square-anlogue-watch.jpg" alt="">
-                    <h5>Square Analogue watch</h5>
-                    <h5>Price KSH 789</h5>
-                </a>    
-
-                <button>Add to Cart</button>
-            </div>
-            <div>
-                <a href="">
-                    <img src="images/wrist-watch.jpg" alt="">
-                    <h5>Wrist Watch</h5>
-                    <h5>Price KSH 1, 089</h5>
-                </a>    
-
-                <button>Add to Cart</button>
-            </div>
+                $conn->close();
+                $conn2->close();
+            
+            ?>
+            
 
         </div>
+    </div>
+
+    <div id="cart-response" class="cart-response">
+        <i class="fa-solid fa-circle-xmark" id="close-dialog"></i>
+        <h3 class="added-item-name"></h3>
+        <a href="cart.php">View Cart</a>
+    </div>
+
+    <div id="ajax-loader">
+        <div class="spinner"></div>
     </div>
 
     <footer>
@@ -274,31 +277,21 @@ if (isset($_SESSION["id"])) {
             
         }
 
-//         document.addEventListener('DOMContentLoaded', function() {
-//         const productId = <?php echo $product_id?>; // Replace with the actual product ID
-//         const userId = <?php echo $user_id?>; // Replace with the actual user ID if available
+        let types = document.querySelectorAll(".type")
 
-//     fetch('product.php', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/x-www-form-urlencoded'
-//         },
-//         body: `product_id=${productId}&user_id=${userId}`
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         if (data.status === 'success') {
-//             console.log('View logged successfully');
-//         } else {
-//             console.log('Failed to log view');
-//         }
-//     })
-//     .catch(error => console.error('Error:', error));
-
-   
-// });
-
+        document.addEventListener("DOMContentLoaded", ()=>{
+            for (let i = 0; i < types.length; i++) {
+                types[i].addEventListener("click", (event)=>{
+                    if (event.target && event.target.classList.contains('details-btn')) {
+                        types[i].classList.toggle("active")
+                    }
+                })
+                
+            }
+        })
 
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="js/index.js"></script>
 </body>
 </html>
