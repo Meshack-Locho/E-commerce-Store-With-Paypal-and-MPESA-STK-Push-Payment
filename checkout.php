@@ -63,13 +63,16 @@ if (!isset($_SESSION['id'])) {
             }
             .navigation{
                 background-color: rgb(165, 167, 253);
-                box-shadow: 0px 10px 10px rgb(202, 203, 255);
+                box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.2);
             }
             .navigation nav ul a{
                 color: black;
             }
-            .cart-icon{
+            .cart-icon, .checkout-username, .fa-bars{
                 color: black;
+            }
+            .user-options{
+                background-color: rgb(162, 163, 251);
             }
             @media screen and (max-width:800px) {
                 body{
@@ -90,15 +93,14 @@ if (!isset($_SESSION['id'])) {
             <nav>
                 <ul>
                     <li><a href="index.php">Home</a></li>
-                    <li><a href="">Watches</a></li>
-                    <li><a href="">Contact</a></li>
+                    <li><a href="contact.php">Contact</a></li>
                     <?php
                     
                         if (isset($_SESSION["id"])) { ?>
-                            <li id="user-name"><?= $_SESSION["fname"]?> <i class="fa-solid fa-angle-down"></i>
+                            <li id="user-name" class="checkout-username" style="color: black;"><?= $_SESSION["fname"]?> <i class="fa-solid fa-angle-down"></i>
                             
                             <div class="user-options">
-                                <a href="dashboard.php">Dashboard</a>
+                                <a href="user/dashboard.php">Dashboard</a>
                                 <a href="logout.php">Logout</a>
                             </div>
                             </li>
@@ -115,7 +117,38 @@ if (!isset($_SESSION['id'])) {
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span id="items-count">0</span>
             </a>
+
+            <i class="fa-solid fa-bars menu-toggle"></i>
         </div>
+        
+        <div class="mobile-menu">
+            <i class="fa-solid fa-xmark menu-toggle"></i>
+        <nav>
+                <ul>
+                    <li><a href="index.php">Home</a></li>
+                    <li><a href="contact.php">Contact</a></li>
+                    <?php
+                    
+                        if (isset($_SESSION["id"])) { ?>
+                            <li id="user-name">
+                                <a href="user/dashboard.php"><?= $_SESSION["fname"]?></a>
+                                <div class="mob-options">
+                                    <a href="user/dashboard.php">Dashboard</a>
+                                    <a href="logout.php">Logout</a>
+                                </div>
+                            </li>
+                            
+                       <?php }else{ ?>
+                            <li><a href="login.php" id="login-link">Login</a></li>
+                            <li><a href="signup.php" id="signup-link">Sign Up</a></li>
+                       <?php }
+                    
+                    ?>
+                </ul>
+            </nav>
+
+        </div>
+
     </div>
     <div class="wrapper">
         <form action="stkpush.php" method="post" id="checkout-form" class="checkout-form">
@@ -357,6 +390,8 @@ if (!isset($_SESSION['id'])) {
         
         ?>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="js/index.js"></script>
 
     <script>
         let guestCheckout = document.getElementById("guest-checkout")
@@ -383,19 +418,6 @@ if (!isset($_SESSION['id'])) {
         guestCheckout.addEventListener("click", ()=>{
             checkoutOptions.classList.add("inactive")
         })
-        
-        let itemsOnCartText = document.getElementById("items-count")
-
-    function updateItemCount() {
-        fetch("s.php")
-            .then(response=>response.text())
-            .then(data => {
-                    itemsOnCartText.textContent = data
-                
-        })
-    }
-
-updateItemCount()
 
 
     </script>

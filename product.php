@@ -15,6 +15,7 @@ if (isset($_GET["id"])) {
     $stmt->bind_param("i", $product_id);
     $stmt->execute();
     $res = $stmt->get_result();
+    $row = $res->fetch_assoc();
 
 }
 if (isset($_SESSION["id"])) {
@@ -27,7 +28,7 @@ if (isset($_SESSION["id"])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title><?php echo $row["name"]?></title>
     <link rel="stylesheet" href="css/products.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet"
@@ -44,8 +45,7 @@ if (isset($_SESSION["id"])) {
             <nav>
                 <ul>
                     <li><a href="index.php">Home</a></li>
-                    <li><a href="">Watches</a></li>
-                    <li><a href="">Contact</a></li>
+                    <li><a href="contact.php">Contact</a></li>
                     <?php
                     
                         if (isset($_SESSION["id"])) { ?>
@@ -69,6 +69,36 @@ if (isset($_SESSION["id"])) {
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span id="items-count">0</span>
             </a>
+
+            <i class="fa-solid fa-bars menu-toggle"></i>
+        </div>
+
+        <div class="mobile-menu">
+            <i class="fa-solid fa-xmark menu-toggle"></i>
+        <nav>
+                <ul>
+                    <li><a href="index.php">Home</a></li>
+                    <li><a href="contact.php">Contact</a></li>
+                    <?php
+                    
+                        if (isset($_SESSION["id"])) { ?>
+                            <li id="user-name">
+                                <a href="user/dashboard.php"><?= $_SESSION["fname"]?></a>
+                                <div class="mob-options">
+                                    <a href="user/dashboard.php">Dashboard</a>
+                                    <a href="logout.php">Logout</a>
+                                </div>
+                            </li>
+                            
+                       <?php }else{ ?>
+                            <li><a href="login.php" id="login-link">Login</a></li>
+                            <li><a href="signup.php" id="signup-link">Sign Up</a></li>
+                       <?php }
+                    
+                    ?>
+                </ul>
+            </nav>
+
         </div>
     </div>
 
@@ -88,7 +118,10 @@ if (isset($_SESSION["id"])) {
             <div class="main-image-desc">
 
                 <?php
-                
+                $stmt = $conn->prepare("SELECT * FROM all_products WHERE id=?");
+                $stmt->bind_param("i", $product_id);
+                $stmt->execute();
+                $res = $stmt->get_result();
                 if ($res->num_rows>0) {
                     while ($row = $res->fetch_assoc()) {
                         echo "<div class='items'>
@@ -152,6 +185,7 @@ if (isset($_SESSION["id"])) {
             <div class="info">
                 <h3>Order Now</h3>
                 <a href="tel:+254712345678"><i class="fa-solid fa-phone"></i> Call Now for delivery</a>
+                <button id="whatsapp-order">Order on Whatsapp <i class="fa-brands fa-whatsapp"></i></button>
 
                 <h3>Types of Delivery</h3>
                 <div class="delivery-types">
@@ -240,8 +274,6 @@ if (isset($_SESSION["id"])) {
                 </div>';
             }
 
-                $conn->close();
-                $conn2->close();
             
             ?>
             
@@ -264,6 +296,8 @@ if (isset($_SESSION["id"])) {
         <h5>Created by, Meshack Locho</h5>
     </footer>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="js/index.js"></script>
 
     <script>
         let moreProdPhotos = document.querySelectorAll(".image-gallery img")
@@ -290,8 +324,41 @@ if (isset($_SESSION["id"])) {
             }
         })
 
+        <?php
+
+        $product_id = filter_var($_GET["id"], FILTER_SANITIZE_NUMBER_INT);
+
+        $stmt = $conn->prepare("SELECT * FROM all_products WHERE id=?");
+        $stmt->bind_param("i", $product_id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $row = $res->fetch_assoc(); ?>
+            const productUrl = "http://localhost:8080/mysite/ec-website/product.php?id=<?php echo $row["id"]?>"
+            const productName = "<?php echo $row["name"]?>"
+            const productPrice = "<?php echo $row["price"]?>"
+        <?php
+        ?>
+
+        let whatsappOrderBtn = document.getElementById("whatsapp-order")
+        const phone = 254714352684
+
+        whatsappOrderBtn.onclick = function () {
+            let url = "https://wa.me/" + phone + "?text=" + 
+            "Product Name: " + productName + "%0a" +
+            "Product Url: " + productUrl + "%0a" +
+            "Product price: " + productPrice + "%0a%0a"
+
+            window.open(url, "_blank").focus()
+        }
+
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="js/index.js"></script>
+
+    
+    <?php
+    
+    $conn->close();
+    $conn2->close();
+    ?>
+    
 </body>
 </html>

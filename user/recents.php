@@ -66,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
 
             <a href="http://localhost:8080/mysite/ec-website/cart.php" class="cart-toggle cart-icon">
                 <i class="fa-solid fa-cart-shopping"></i>
-                <span id="items-count">0</span>
+                <span class="items-count">0</span>
             </a>
 
             <i class="fa-solid fa-user menu-toggle"></i>
@@ -189,9 +189,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
         <h5>Created by, Meshack Locho</h5>
     </footer>
 
-    <script src="http://localhost:8080/mysite/ec-website/js/user.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="http://localhost:8080/mysite/ec-website/js/user.js"></script>
 
     <script>
         $('#clear-all').on('click', function(response) {

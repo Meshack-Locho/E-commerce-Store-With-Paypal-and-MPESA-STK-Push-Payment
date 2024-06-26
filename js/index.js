@@ -95,7 +95,14 @@ window.onscroll = ()=>{
             "position":"relative"
         })
     }
+
+    if (window.scrollY >= 600) {
+        $(".navigation").addClass("scrolled")
+    }else{
+        $(".navigation").removeClass("scrolled")
+    }
 }
+
 
 
 

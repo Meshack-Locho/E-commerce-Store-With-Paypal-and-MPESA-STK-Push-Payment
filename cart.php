@@ -46,7 +46,7 @@ if (!isset($_SESSION["id"])) {
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
 
-    <title>Document</title>
+    <title>My Cart</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet"
@@ -60,7 +60,7 @@ if (!isset($_SESSION["id"])) {
 <body>
 <div class="search-header">
     <div class="navigation">
-            <a href="" class="logo">
+            <a href="index.php" class="logo">
                 <img src="images/hero/hero-4.png" alt="">
                 <h2>Mellow Watches</h2>
             </a>
@@ -101,7 +101,7 @@ if (!isset($_SESSION["id"])) {
         <nav>
                 <ul>
                     <li><a href="index.php">Home</a></li>
-                    
+                    <li><a href="contact.php">Contact</a></li>
                     <?php
                     
                         if (isset($_SESSION["id"])) { ?>

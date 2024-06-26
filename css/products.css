@@ -88,6 +88,48 @@ body{
     height: 50px;
     object-fit: contain;
 }
+
+.fa-bars{
+    visibility: hidden;
+}
+.mobile-menu{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    width: 100%;
+    height: 100vh;
+    background-color: #080808;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 50px 0;
+    transform: translateX(-100%);
+    transition: all 1s ease-in-out;
+}
+.mobile-menu.active{
+    transform: translateX(0);
+}
+.mobile-menu nav ul{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    list-style: none;
+}
+.mobile-menu nav ul a{
+    text-decoration: none;
+    color: rgb(162, 163, 251);
+}
+.mobile-menu i{
+    color: rgb(162, 163, 251);
+    font-size: 30px;
+}
+#user-name .mob-options{
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
 .cart-icon{
     color: rgb(202, 203, 255);
     font-size: 30px;
@@ -302,7 +344,15 @@ body{
     color: white;
 }
 
-
+#whatsapp-order{
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background-color: rgb(0, 177, 47);
+    color: black;
+    cursor: pointer;
+    font-size: 15px;
+}
 .details-desc{
     display: flex;
     flex-direction: column;
@@ -450,5 +500,13 @@ footer{
     }
     .gallery-info{
         width: 90%;
+    }
+    .navigation nav{
+        display: none;
+    }
+    .fa-bars{
+        visibility: visible;
+        color: rgb(162, 163, 251);
+        font-size: 30px;
     }
 }

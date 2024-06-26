@@ -50,7 +50,10 @@ header{
     align-items: center;
     justify-content: space-evenly;
     padding: 10px 0;
-    z-index: 1;
+    z-index: 3;
+}
+.navigation.scrolled{
+    background-color: #080808;
 }
 .navigation nav ul{
     list-style: none;
@@ -660,6 +663,7 @@ main{
     justify-content: space-between;
     text-decoration: none;
     gap: 20px;
+    color: black;
 }
 .item-links img{
     width: 250px;

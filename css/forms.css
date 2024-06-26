@@ -60,6 +60,14 @@ body{
     border-radius: 10px;
     color: white;
 }
+.wrapper form #message{
+    padding: 15px;
+    width: 90%;
+    height: 300px;
+    border-radius: 10px;
+    background-color: rgb(202, 203, 255);
+    border: 1px solid rgb(179, 181, 249);
+}
 .decorator{
     position: fixed;
     right: 0;
