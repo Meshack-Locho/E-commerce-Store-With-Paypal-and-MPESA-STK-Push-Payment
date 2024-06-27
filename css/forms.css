@@ -116,6 +116,22 @@ body{
     z-index: 3;
     padding: 20px;
 }
+.confirmation{
+    max-width: 300px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background-color: rgb(111, 113, 254);
+    border: 1px solid rgb(169, 170, 255);
+    border-radius: 20px;
+    position: fixed;
+    top: 2%;
+    right: 2%;
+    color: rgb(0, 0, 0);
+    z-index: 3;
+    padding: 20px;
+}
 @media screen and (max-width:800px) {
     .wrapper form{
         width: 90%;

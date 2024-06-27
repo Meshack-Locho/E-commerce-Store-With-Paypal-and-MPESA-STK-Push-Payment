@@ -75,6 +75,8 @@ if (isset($_POST["submit"])) {
 
         <p>You don't have account? <a href="signup.php">Register</a> an account.</p>
 
+        <p><a href="password_reset.php">Forgot Password?</a></p>
+
         <div class="decorator">
             <img src="images/hero/deco-img.jpg" alt="">
             <h3>Mellow Watches</h3>

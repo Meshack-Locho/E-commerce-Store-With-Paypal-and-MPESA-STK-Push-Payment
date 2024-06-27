@@ -182,6 +182,11 @@ if (isset($_POST["add_to_cart"])) {
 
     <div class="cart"></div>
 
+    <footer>
+        <h3>Mellow Wrist Watches &copy; Copyright 2024</h3>
+        <h5>Created by, Meshack Locho</h5>
+    </footer>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="js/index.js"></script>
 </body>

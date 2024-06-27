@@ -1,3 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart Item Deletion</title>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Josefin Sans">
+    <style>
+        .body{
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Josefin sans;
+        }
+        .confirmation{
+            width: 300px;
+            padding: 50px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: rgb(129, 131, 253);
+            color: black;
+            align-items: center;
+            justify-content: center;
+        }
+        .confirmation button{
+            width: 150px;
+            padding: 10px;
+            border: none;
+            background-color: rgb(202, 203, 255);
+            border-radius: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    
+</body>
+</html>
 <?php
 
 session_start();
@@ -32,14 +74,16 @@ if (isset($_POST['remove_from_cart'])) {
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
         $cart = json_decode($row['cart'], true);
-        echo $remove_id;
         
 
         if (isset($remove_id)) {
             foreach($cart as $key => $item) {
                 if($item['id'] == $remove_id) {
                     unset($cart[$key]);
-                    echo "Item deleted";
+                    echo "<div class='confirmation'>
+                            <h3>Item deleted</h3>  
+                            <button onclick='history.back()'>Back</button>
+                          </div>";
                     break; // Break out of loop since the item is found and unset
                 }
             }
@@ -50,9 +94,8 @@ if (isset($_POST['remove_from_cart'])) {
             $stmt->bind_param("si", $new_cart, $user_id);
             $stmt->execute();
             $stmt->close();
-            echo "SET";
         }else{
-            echo "NOT SET";
+            echo "Item ID NOT SET";
         }
     }else{
         echo "Product Not Found In Cart";
@@ -60,3 +103,4 @@ if (isset($_POST['remove_from_cart'])) {
 }
 
 ?>
+
